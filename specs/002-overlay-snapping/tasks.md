@@ -4,19 +4,19 @@
 **Prerequisites**: plan.md, spec.md
 
 ## Phase 1: Setup (Shared Infrastructure)
-- [ ] T001 Create `macos/FracTile/` project structure
-- [ ] T002 Initialize Swift AppKit project
-- [ ] T003 Configure linting and formatting tools
+ - [ ] T001 Create `app/Sources/` and `app/Resources/` project structure
+ - [ ] T002 Initialize Swift AppKit project in `app/FracTile.xcodeproj`
+ - [ ] T003 Configure linting and formatting tools
 
 ---
-
-## Phase 2: Foundational (Blocking Prerequisites)
-- [ ] T004 Implement Accessibility API wrapper in `WindowManager.swift`
-- [ ] T005 Create basic `OverlayWindowController.swift` with transparent grid overlay
-- [ ] T006 Implement `ZoneConfigurator.swift` for layout definition and JSON persistence
+ - [ ] T004 Implement Accessibility API wrapper in `app/Sources/WindowManager.swift`
+ - [ ] T005 Create basic `app/Sources/OverlayWindowController.swift` with transparent grid overlay
+ - [ ] T006 Implement `app/Sources/ZoneConfigurator.swift` for layout definition and JSON persistence
+ - [ ] T007 Setup event monitoring in `app/Sources/EventController.swift` (Shift+drag, Command multi-select)
+ - [ ] T008 Create `app/Sources/PreferencesUI.swift` for menu bar controls
 - [ ] T007 Setup event monitoring in `EventController.swift` (Shift+drag, Command multi-select)
 - [ ] T008 Create `PreferencesUI.swift` for menu bar controls
-
+ - [ ] T028 Additional unit tests in `app/Tests/FracTileTests.swift`
 ---
 
 ## Phase 3: User Story 1 - Trigger overlay & snap window (Priority: P1)
