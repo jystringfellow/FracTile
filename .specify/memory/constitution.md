@@ -1,50 +1,85 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# FracTile Constitution
+
+## Project
+
+**Name**: FracTile
+
+**Mission**:
+To bring flexible, grid-based window management to macOS. FracTile empowers
+users to create, visualize, and snap windows into customizable fractal-like
+layouts that adapt to their workflow.
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### 1. User control and simplicity over automation
+Users MUST remain in control; automation is an assist, not the default. Features
+shall expose simple controls and undo paths. Complex automation MUST be opt-in
+and clearly visible. Rationale: predictable UI behavior reduces friction and
+avoids surprising users.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### 2. Visual clarity through lightweight, unobtrusive overlays
+UI overlays and indicators MUST be minimal, non-blocking, and dismissible. Any
+visual affordance MUST prioritize legibility and avoid obscuring important
+content. Rationale: overlays should aid workflows without distracting from the
+primary task.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### 3. Accessibility-first interaction (no private APIs)
+Designs and implementations MUST prioritize accessibility (VoiceOver, keyboard
+navigation, high-contrast modes) and MUST NOT rely on private or unsupported
+APIs. Rationale: accessibility broadens the user base and private APIs risk
+stability and App Store rejection.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### 4. Open, modular, and hackable by design
+The codebase and features SHOULD be modular with clear extension points. Public
+APIs (or internal extension points) MUST be documented. Rationale: modularity
+encourages contributions, experimentation, and long-term maintainability.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+## Platform Constraints
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+- Must operate entirely within macOS Accessibility API boundaries.
+- No persistent background CPU-heavy processes; prefer event-driven behavior.
+- Must run locally, offline, and respect user privacy (no telemetry without
+  explicit opt-in).
+- Written primarily in Swift (AppKit-based) unless a compelling reason exists.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+## Operational Constraints (brief)
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+- Secure defaults for any networked component (if introduced).
+- Minimal privilege for helper processes and sandbox-friendly design where
+  applicable.
+- Dependency hygiene: prefer well-maintained Swift packages; review native
+  dependencies for license and maintenance status.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+## Development Workflow
+
+- Planning: Features require a `spec.md` and `plan.md`; the plan MUST include a
+  Constitution Check describing how the feature satisfies the Core Principles.
+- Reviews: PRs that change UI/UX, public APIs, or add background work MUST
+  include screenshots, accessibility notes, tests, and at least one maintainer
+  approval.
+- Quality Gates: CI MUST run unit tests and linting; fast integration checks
+  for critical UI/behavior paths are encouraged.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+Amendments
+- Propose amendments by opening a PR that modifies `.specify/memory/constitution.md`.
+- The PR MUST include: rationale, migration plan for behavioral changes, and an
+  explicit version bump suggestion (MAJOR/MINOR/PATCH) with reasoning.
+- Approval: changes require approval from the project maintainers. If no
+  maintainers are listed, the PR MUST name suggested approvers and request
+  review from collaborators.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+Versioning Policy
+- The Constitution follows semantic versioning. Bump MAJOR for incompatible
+  governance/principle removals or redefinitions, MINOR for new principles or
+  material expansions, and PATCH for clarifications and non-semantic edits.
+
+Compliance & Reviews
+- PRs implementing features or infra MUST reference this Constitution and
+  include a short compliance checklist (accessibility, privacy, CPU impact,
+  dependency review).
+- Periodic review: the Constitution SHOULD be reviewed annually or after any
+  MAJOR governance change.
+
+**Version**: 0.2.0 | **Ratified**: TODO(RATIFICATION_DATE): original adoption date unknown | **Last Amended**: 2025-10-25
