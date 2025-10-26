@@ -1,1 +1,0 @@
-This is a placeholder for the Xcode project. Open Xcode and create FracTile.xcodeproj here.
