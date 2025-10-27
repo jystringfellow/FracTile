@@ -4,8 +4,8 @@
 **Prerequisites**: plan.md, spec.md
 
 ## Phase 1: Setup (Shared Infrastructure)
- - [ ] T001 Create `app/Sources/` and `app/Resources/` project structure
- - [ ] T002 Initialize Swift AppKit project in `app/FracTile.xcodeproj`
+ - [x] T001 Create `app/Sources/` and `app/Resources/` project structure
+ - [x] T002 Initialize Swift AppKit project in `app/FracTile.xcodeproj`
  - [ ] T003 Configure linting and formatting tools
 
 ---
