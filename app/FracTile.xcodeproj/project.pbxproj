@@ -7,29 +7,36 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		599477752EAE6C68005BEB8C /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477682EAE6B20005BEB8C /* Layout.swift */; };
-		599477762EAE6C68005BEB8C /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477692EAE6B20005BEB8C /* Preference.swift */; };
-		599477772EAE6C68005BEB8C /* Zone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5994776A2EAE6B20005BEB8C /* Zone.swift */; };
-		599477782EAE6C68005BEB8C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5994776C2EAE6B20005BEB8C /* AppDelegate.swift */; };
-		599477792EAE6C68005BEB8C /* EventController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5994776D2EAE6B20005BEB8C /* EventController.swift */; };
-		5994777A2EAE6C68005BEB8C /* OverlayWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5994776E2EAE6B20005BEB8C /* OverlayWindowController.swift */; };
-		5994777B2EAE6C68005BEB8C /* PreferencesUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5994776F2EAE6B20005BEB8C /* PreferencesUI.swift */; };
-		5994777C2EAE6C68005BEB8C /* WindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477702EAE6B20005BEB8C /* WindowManager.swift */; };
-		5994777D2EAE6C68005BEB8C /* ZoneConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477712EAE6B20005BEB8C /* ZoneConfigurator.swift */; };
+		599477DC2EB58A6F005BEB8C /* ZoneEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477DB2EB58A6A005BEB8C /* ZoneEngine.swift */; };
+		599477DE2EB58B00005BEB8C /* Snapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477DD2EB58AFB005BEB8C /* Snapping.swift */; };
+		599477E02EB58B2C005BEB8C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477DF2EB58B28005BEB8C /* AppDelegate.swift */; };
+		599477E22EB58B40005BEB8C /* StatusMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477E12EB58B3C005BEB8C /* StatusMenuController.swift */; };
+		599477E42EB58B58005BEB8C /* OverlayWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477E32EB58B53005BEB8C /* OverlayWindowController.swift */; };
+		599477E62EB58B6B005BEB8C /* EditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477E52EB58B66005BEB8C /* EditorViewController.swift */; };
+		599477E82EB58B7E005BEB8C /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477E72EB58B78005BEB8C /* PreferencesWindowController.swift */; };
+		599477EA2EB58B8E005BEB8C /* AccessibilityHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477E92EB58B89005BEB8C /* AccessibilityHelper.swift */; };
+		599477EC2EB6D8B8005BEB8C /* FractileApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477EB2EB6D8B1005BEB8C /* FractileApp.swift */; };
+		599477EE2EB6DAE4005BEB8C /* OverlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477ED2EB6DAE1005BEB8C /* OverlayController.swift */; };
+		599477F02EB6DC88005BEB8C /* EditorWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477EF2EB6DC84005BEB8C /* EditorWindowController.swift */; };
+		599477F22EB6DD30005BEB8C /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477F12EB6DD2C005BEB8C /* PreferencesViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		599477562EAE68C4005BEB8C /* FracTile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FracTile.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		599477682EAE6B20005BEB8C /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
-		599477692EAE6B20005BEB8C /* Preference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preference.swift; sourceTree = "<group>"; };
-		5994776A2EAE6B20005BEB8C /* Zone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zone.swift; sourceTree = "<group>"; };
-		5994776C2EAE6B20005BEB8C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		5994776D2EAE6B20005BEB8C /* EventController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventController.swift; sourceTree = "<group>"; };
-		5994776E2EAE6B20005BEB8C /* OverlayWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayWindowController.swift; sourceTree = "<group>"; };
-		5994776F2EAE6B20005BEB8C /* PreferencesUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesUI.swift; sourceTree = "<group>"; };
-		599477702EAE6B20005BEB8C /* WindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowManager.swift; sourceTree = "<group>"; };
-		599477712EAE6B20005BEB8C /* ZoneConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneConfigurator.swift; sourceTree = "<group>"; };
 		599477732EAE6B3F005BEB8C /* FracTileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FracTileTests.swift; sourceTree = "<group>"; };
+		599477DB2EB58A6A005BEB8C /* ZoneEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneEngine.swift; sourceTree = "<group>"; };
+		599477DD2EB58AFB005BEB8C /* Snapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Snapping.swift; sourceTree = "<group>"; };
+		599477DF2EB58B28005BEB8C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		599477E12EB58B3C005BEB8C /* StatusMenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusMenuController.swift; sourceTree = "<group>"; };
+		599477E32EB58B53005BEB8C /* OverlayWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayWindowController.swift; sourceTree = "<group>"; };
+		599477E52EB58B66005BEB8C /* EditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorViewController.swift; sourceTree = "<group>"; };
+		599477E72EB58B78005BEB8C /* PreferencesWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesWindowController.swift; sourceTree = "<group>"; };
+		599477E92EB58B89005BEB8C /* AccessibilityHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityHelper.swift; sourceTree = "<group>"; };
+		599477EB2EB6D8B1005BEB8C /* FractileApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FractileApp.swift; sourceTree = "<group>"; };
+		599477ED2EB6DAE1005BEB8C /* OverlayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayController.swift; sourceTree = "<group>"; };
+		599477EF2EB6DC84005BEB8C /* EditorWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorWindowController.swift; sourceTree = "<group>"; };
+		599477F12EB6DD2C005BEB8C /* PreferencesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
+		599477F32EB91F91005BEB8C /* FracTile-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "FracTile-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,6 +53,7 @@
 		5994774D2EAE68C4005BEB8C = {
 			isa = PBXGroup;
 			children = (
+				599477F32EB91F91005BEB8C /* FracTile-Info.plist */,
 				599477742EAE6B3F005BEB8C /* Tests */,
 				599477722EAE6B20005BEB8C /* Sources */,
 				599477572EAE68C4005BEB8C /* Products */,
@@ -60,26 +68,21 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		5994776B2EAE6B20005BEB8C /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				599477682EAE6B20005BEB8C /* Layout.swift */,
-				599477692EAE6B20005BEB8C /* Preference.swift */,
-				5994776A2EAE6B20005BEB8C /* Zone.swift */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
 		599477722EAE6B20005BEB8C /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				5994776B2EAE6B20005BEB8C /* Models */,
-				5994776C2EAE6B20005BEB8C /* AppDelegate.swift */,
-				5994776D2EAE6B20005BEB8C /* EventController.swift */,
-				5994776E2EAE6B20005BEB8C /* OverlayWindowController.swift */,
-				5994776F2EAE6B20005BEB8C /* PreferencesUI.swift */,
-				599477702EAE6B20005BEB8C /* WindowManager.swift */,
-				599477712EAE6B20005BEB8C /* ZoneConfigurator.swift */,
+				599477F12EB6DD2C005BEB8C /* PreferencesViewController.swift */,
+				599477EF2EB6DC84005BEB8C /* EditorWindowController.swift */,
+				599477ED2EB6DAE1005BEB8C /* OverlayController.swift */,
+				599477EB2EB6D8B1005BEB8C /* FractileApp.swift */,
+				599477E92EB58B89005BEB8C /* AccessibilityHelper.swift */,
+				599477E72EB58B78005BEB8C /* PreferencesWindowController.swift */,
+				599477E52EB58B66005BEB8C /* EditorViewController.swift */,
+				599477E32EB58B53005BEB8C /* OverlayWindowController.swift */,
+				599477E12EB58B3C005BEB8C /* StatusMenuController.swift */,
+				599477DF2EB58B28005BEB8C /* AppDelegate.swift */,
+				599477DD2EB58AFB005BEB8C /* Snapping.swift */,
+				599477DB2EB58A6A005BEB8C /* ZoneEngine.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -106,6 +109,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				599477822EAFB18F005BEB8C /* PBXTargetDependency */,
 			);
 			name = FracTile;
 			packageProductDependencies = (
@@ -166,19 +170,29 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				599477752EAE6C68005BEB8C /* Layout.swift in Sources */,
-				599477762EAE6C68005BEB8C /* Preference.swift in Sources */,
-				599477772EAE6C68005BEB8C /* Zone.swift in Sources */,
-				599477782EAE6C68005BEB8C /* AppDelegate.swift in Sources */,
-				599477792EAE6C68005BEB8C /* EventController.swift in Sources */,
-				5994777A2EAE6C68005BEB8C /* OverlayWindowController.swift in Sources */,
-				5994777B2EAE6C68005BEB8C /* PreferencesUI.swift in Sources */,
-				5994777C2EAE6C68005BEB8C /* WindowManager.swift in Sources */,
-				5994777D2EAE6C68005BEB8C /* ZoneConfigurator.swift in Sources */,
+				599477F02EB6DC88005BEB8C /* EditorWindowController.swift in Sources */,
+				599477E02EB58B2C005BEB8C /* AppDelegate.swift in Sources */,
+				599477E62EB58B6B005BEB8C /* EditorViewController.swift in Sources */,
+				599477DC2EB58A6F005BEB8C /* ZoneEngine.swift in Sources */,
+				599477E22EB58B40005BEB8C /* StatusMenuController.swift in Sources */,
+				599477EA2EB58B8E005BEB8C /* AccessibilityHelper.swift in Sources */,
+				599477EC2EB6D8B8005BEB8C /* FractileApp.swift in Sources */,
+				599477EE2EB6DAE4005BEB8C /* OverlayController.swift in Sources */,
+				599477E82EB58B7E005BEB8C /* PreferencesWindowController.swift in Sources */,
+				599477DE2EB58B00005BEB8C /* Snapping.swift in Sources */,
+				599477E42EB58B58005BEB8C /* OverlayWindowController.swift in Sources */,
+				599477F22EB6DD30005BEB8C /* PreferencesViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		599477822EAFB18F005BEB8C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 599477812EAFB18F005BEB8C /* SwiftLintBuildToolPlugin */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		5994775F2EAE68C4005BEB8C /* Debug */ = {
@@ -306,6 +320,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -315,8 +330,10 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "FracTile-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = FracTile;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -340,6 +357,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -349,8 +367,10 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "FracTile-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = FracTile;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -402,6 +422,14 @@
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		599477812EAFB18F005BEB8C /* SwiftLintBuildToolPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5994777E2EAFAF26005BEB8C /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
+			productName = "plugin:SwiftLintBuildToolPlugin";
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 5994774E2EAE68C4005BEB8C /* Project object */;
 }

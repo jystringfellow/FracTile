@@ -1,14 +1,30 @@
+//
+//  AppDelegate.swift
+//  FracTile
+//
+//  Created by Jacob Stringfellow on 10/31/25.
+//
+
 import Cocoa
 
-@main
+//@main
 class AppDelegate: NSObject, NSApplicationDelegate {
-    var window: NSWindow!
+
+    var statusItemController: StatusMenuController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        window = NSWindow(contentRect: NSMakeRect(0, 0, 800, 600),
-                          styleMask: [.titled, .closable, .resizable],
-                          backing: .buffered, defer: false)
-        window.title = "FracTile"
-        window.makeKeyAndOrderFront(nil)
+        NSApp.setActivationPolicy(.accessory)
+        statusItemController = StatusMenuController()
+        statusItemController?.setupStatusItem()
+        AccessibilityHelper.checkAndPromptIfNeeded()
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        // Clean up if needed
+    }
+
+    // Keep the app running even without windows
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        return false
     }
 }
