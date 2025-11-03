@@ -36,7 +36,7 @@ public class SnappyHelperBase {
         let zoneRect = zones[zoneIndex]
         let zonePosition = isX ? Int(zoneRect.origin.x) : Int(zoneRect.origin.y)
         let zoneAxisSize = isX ? Int(zoneRect.width) : Int(zoneRect.height)
-        let minAxisSize = isX ? 64 : 72 // mirrors MinZoneWidth/MinZoneHeight used in editor
+        let minAxisSize = isX ? 64 : 72
         var keyPositions: [Int] = []
 
         for (index, otherZone) in zones.enumerated() where index != zoneIndex {

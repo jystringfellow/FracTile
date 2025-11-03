@@ -7,70 +7,58 @@
 
 import Cocoa
 
-// PreferencesViewController.swift
-// Simple preferences UI for FracTile / FancyZonesMac MVP.
-// - Shows current modifier key settings for Snap and Multi-Zone modifiers
-// - Allows changing them (via pop-up menus) and saving to UserDefaults
-// - Exposes a toggle for "Ignore overlay mouse events" (affects overlay behavior)
-// - Minimal, self-contained AppKit view controller suitable for presentation in a Preferences window
+// NOTE: this is an updated PreferencesViewController that includes a per-display layout chooser and Preview action.
+// Drop this file into your project (replace the existing PreferencesViewController if present).
+// It depends on DefaultLayouts, LayoutManager, ZoneEngine, and OverlayController already being in the project.
 
 final class PreferencesViewController: NSViewController {
-
-    // Keys for storing preferences in UserDefaults
-    private enum Keys {
-        static let snapModifier = "FracTile.SnapModifier"              // String, e.g. "Shift"
-        static let multiZoneModifier = "FracTile.MultiZoneModifier"   // String, e.g. "Shift+Command"
-        static let overlayIgnoresMouse = "FracTile.OverlayIgnoresMouse" // Bool
-    }
-
-    // Default values matching your choices
-    private let defaultSnap = "Shift"                      // Snap = Shift
-    private let defaultMulti = "Shift+Command"            // Multi-zone = Shift+Command
-
     // UI Controls
-    private let snapLabel: NSTextField = {
-        let field = NSTextField(labelWithString: "Snap modifier:")
-        field.translatesAutoresizingMaskIntoConstraints = false
-        return field
+    private let displayLabel: NSTextField = {
+        let textField = NSTextField(labelWithString: "Display:")
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        return textField
+    }()
+    private let displayPopup: NSPopUpButton = {
+        let popUpButton = NSPopUpButton(frame: .zero, pullsDown: false)
+        popUpButton.translatesAutoresizingMaskIntoConstraints = false
+        return popUpButton
     }()
 
-    private let snapPopup: NSPopUpButton = {
-        let button = NSPopUpButton(frame: .zero, pullsDown: false)
+    private let layoutLabel: NSTextField = {
+        let textField = NSTextField(labelWithString: "Layout:")
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        return textField
+    }()
+    private let layoutPopup: NSPopUpButton = {
+        let popUpButton = NSPopUpButton(frame: .zero, pullsDown: false)
+        popUpButton.translatesAutoresizingMaskIntoConstraints = false
+        return popUpButton
+    }()
+
+    private let previewButton: NSButton = {
+        let button = NSButton(title: "Preview on Display", target: nil, action: #selector(previewPressed(_:)))
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.bezelStyle = .rounded
         return button
-    }()
-
-    private let multiLabel: NSTextField = {
-        let field = NSTextField(labelWithString: "Multi-zone modifier:")
-        field.translatesAutoresizingMaskIntoConstraints = false
-        return field
-    }()
-
-    private let multiPopup: NSPopUpButton = {
-        let button = NSPopUpButton(frame: .zero, pullsDown: false)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-
-    private let ignoresMouseCheckbox: NSButton = {
-        let cb = NSButton(checkboxWithTitle: "Overlay ignores mouse events (click-through)", target: nil, action: nil)
-        cb.translatesAutoresizingMaskIntoConstraints = false
-        return cb
     }()
 
     private let saveButton: NSButton = {
-        let button = NSButton(title: "Save", target: nil, action: #selector(savePressed(_:)))
-        button.bezelStyle = .rounded
+        let button = NSButton(title: "Save Selection", target: nil, action: #selector(savePressed(_:)))
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.bezelStyle = .rounded
         return button
     }()
 
-    private let cancelButton: NSButton = {
-        let button = NSButton(title: "Cancel", target: nil, action: #selector(cancelPressed(_:)))
-        button.bezelStyle = .rounded
+    private let closeButton: NSButton = {
+        let button = NSButton(title: "Close", target: nil, action: #selector(closePressed(_:)))
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.bezelStyle = .rounded
         return button
     }()
+
+    // Internal state
+    private var displays: [(id: Int, name: String, screen: NSScreen)] = []
+    private var zoneSets: [ZoneSet] = DefaultLayouts.all
 
     override func loadView() {
         view = NSView()
@@ -78,123 +66,133 @@ final class PreferencesViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         setupUI()
-        loadPreferences()
+        populateDisplays()
+        populateLayoutPopup()
+        loadCurrentSelection()
     }
 
     private func setupUI() {
-        view.addSubview(snapLabel)
-        view.addSubview(snapPopup)
-        view.addSubview(multiLabel)
-        view.addSubview(multiPopup)
-        view.addSubview(ignoresMouseCheckbox)
+        view.addSubview(displayLabel)
+        view.addSubview(displayPopup)
+        view.addSubview(layoutLabel)
+        view.addSubview(layoutPopup)
+        view.addSubview(previewButton)
         view.addSubview(saveButton)
-        view.addSubview(cancelButton)
+        view.addSubview(closeButton)
 
-        // Populate modifier choices (common combos)
-        let modifierChoices = [
-            "Shift",
-            "Control",
-            "Option",
-            "Command",
-            "Shift+Command",
-            "Control+Command",
-            "Option+Command",
-            "Shift+Option",
-            "None"
-        ]
-
-        snapPopup.addItems(withTitles: modifierChoices)
-        multiPopup.addItems(withTitles: modifierChoices)
-
-        // Targets
+        displayPopup.target = self
+        displayPopup.action = #selector(displaySelectionChanged(_:))
+        layoutPopup.target = self
+        layoutPopup.action = #selector(layoutSelectionChanged(_:))
+        previewButton.target = self
         saveButton.target = self
-        cancelButton.target = self
+        closeButton.target = self
 
-        // Layout
         let margin: CGFloat = 16
         NSLayoutConstraint.activate([
-            snapLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: margin),
-            snapLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: margin),
+            displayLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: margin),
+            displayLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: margin),
 
-            snapPopup.centerYAnchor.constraint(equalTo: snapLabel.centerYAnchor),
-            snapPopup.leadingAnchor.constraint(equalTo: snapLabel.trailingAnchor, constant: 12),
-            snapPopup.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -margin),
+            displayPopup.centerYAnchor.constraint(equalTo: displayLabel.centerYAnchor),
+            displayPopup.leadingAnchor.constraint(equalTo: displayLabel.trailingAnchor, constant: 12),
+            displayPopup.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -margin),
 
-            multiLabel.topAnchor.constraint(equalTo: snapLabel.bottomAnchor, constant: 16),
-            multiLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: margin),
+            layoutLabel.topAnchor.constraint(equalTo: displayLabel.bottomAnchor, constant: 18),
+            layoutLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: margin),
 
-            multiPopup.centerYAnchor.constraint(equalTo: multiLabel.centerYAnchor),
-            multiPopup.leadingAnchor.constraint(equalTo: multiLabel.trailingAnchor, constant: 12),
-            multiPopup.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -margin),
+            layoutPopup.centerYAnchor.constraint(equalTo: layoutLabel.centerYAnchor),
+            layoutPopup.leadingAnchor.constraint(equalTo: layoutLabel.trailingAnchor, constant: 12),
+            layoutPopup.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -margin),
 
-            ignoresMouseCheckbox.topAnchor.constraint(equalTo: multiLabel.bottomAnchor, constant: 18),
-            ignoresMouseCheckbox.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: margin),
-            ignoresMouseCheckbox.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -margin),
+            previewButton.topAnchor.constraint(equalTo: layoutLabel.bottomAnchor, constant: 22),
+            previewButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: margin),
 
-            saveButton.topAnchor.constraint(equalTo: ignoresMouseCheckbox.bottomAnchor, constant: 20),
-            saveButton.trailingAnchor.constraint(equalTo: view.centerXAnchor, constant: -8),
+            saveButton.centerYAnchor.constraint(equalTo: previewButton.centerYAnchor),
+            saveButton.leadingAnchor.constraint(equalTo: previewButton.trailingAnchor, constant: 12),
 
-            cancelButton.centerYAnchor.constraint(equalTo: saveButton.centerYAnchor),
-            cancelButton.leadingAnchor.constraint(equalTo: view.centerXAnchor, constant: 8),
-
-            // bottom anchor for intrinsic content size
-            cancelButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -margin)
+            closeButton.topAnchor.constraint(equalTo: previewButton.bottomAnchor, constant: 18),
+            closeButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: margin),
+            closeButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -margin)
         ])
     }
 
-    private func loadPreferences() {
-        let defaults = UserDefaults.standard
-        let snap = defaults.string(forKey: Keys.snapModifier) ?? defaultSnap
-        let multi = defaults.string(forKey: Keys.multiZoneModifier) ?? defaultMulti
-        let ignoresMouse = defaults.bool(forKey: Keys.overlayIgnoresMouse) // default false
-
-        // indexOfItem(withTitle:) returns Int (not Optional). Check against -1 for "not found".
-        let idx = snapPopup.indexOfItem(withTitle: snap)
-        if idx != -1 {
-            snapPopup.selectItem(at: idx)
-        } else {
-            snapPopup.selectItem(withTitle: defaultSnap)
+    private func populateDisplays() {
+        displays = LayoutManager.shared.availableDisplays()
+        displayPopup.removeAllItems()
+        for display in displays {
+            displayPopup.addItem(withTitle: display.name)
         }
-
-        let idx2 = multiPopup.indexOfItem(withTitle: multi)
-        if idx2 != -1 {
-            multiPopup.selectItem(at: idx2)
+        // select main screen by default
+        if let mainIndex = displays.firstIndex(where: { $0.screen == NSScreen.main }) {
+            displayPopup.selectItem(at: mainIndex)
         } else {
-            multiPopup.selectItem(withTitle: defaultMulti)
+            displayPopup.selectItem(at: 0)
         }
+    }
 
-        ignoresMouseCheckbox.state = ignoresMouse ? .on : .off
+    private func populateLayoutPopup() {
+        layoutPopup.removeAllItems()
+        for zoneSet in zoneSets {
+            // Use name as the menu title; store the id as representedObject for persistence
+            let item = NSMenuItem(title: zoneSet.name, action: nil, keyEquivalent: "")
+            item.representedObject = zoneSet.id
+            layoutPopup.menu?.addItem(item)
+        }
+    }
+
+    private func loadCurrentSelection() {
+        // If we have a selected layout for the currently selected display, select it in the popup
+        guard !displays.isEmpty else { return }
+        let selectedDisplay = displays[displayPopup.indexOfSelectedItem]
+        if let selectedId = LayoutManager.shared.selectedLayoutId(forDisplayID: selectedDisplay.id) {
+            if let menuItem = layoutPopup.menu?.items.first(where: { ($0.representedObject as? String) == selectedId }) {
+                layoutPopup.select(menuItem)
+            }
+        } else {
+            // no persisted value -> select default (Grid 2×2) if exists
+            if let defaultItem = layoutPopup.menu?.items.first(where: { $0.title == "Grid 2×2" }) {
+                layoutPopup.select(defaultItem)
+            } else {
+                layoutPopup.selectItem(at: 0)
+            }
+        }
+    }
+
+    @objc private func displaySelectionChanged(_ sender: Any?) {
+        loadCurrentSelection()
+    }
+
+    @objc private func layoutSelectionChanged(_ sender: Any?) {
+        // no-op for now; user must click Save to persist. You may choose to auto-save here.
+    }
+
+    @objc private func previewPressed(_ sender: Any?) {
+        guard !displays.isEmpty else { return }
+        let selectedDisplay = displays[displayPopup.indexOfSelectedItem]
+        guard let selectedItem = layoutPopup.selectedItem else { return }
+        // find ZoneSet by id or name
+        let selectedId = (selectedItem.representedObject as? String) ?? selectedItem.title
+        let zoneSet = DefaultLayouts.all.first(where: { $0.id == selectedId || $0.name == selectedId }) ?? DefaultLayouts.all.first!
+        LayoutManager.shared.preview(zoneSet: zoneSet, on: selectedDisplay.screen)
     }
 
     @objc private func savePressed(_ sender: Any?) {
-        let defaults = UserDefaults.standard
-        let snapValue = snapPopup.titleOfSelectedItem ?? defaultSnap
-        let multiValue = multiPopup.titleOfSelectedItem ?? defaultMulti
-        let ignoresMouse = (ignoresMouseCheckbox.state == .on)
-
-        defaults.set(snapValue, forKey: Keys.snapModifier)
-        defaults.set(multiValue, forKey: Keys.multiZoneModifier)
-        defaults.set(ignoresMouse, forKey: Keys.overlayIgnoresMouse)
-        defaults.synchronize()
-
-        // Notify other parts of the app about these changes
-        NotificationCenter.default.post(name: .preferencesDidChange, object: nil, userInfo: [
-            Keys.snapModifier: snapValue,
-            Keys.multiZoneModifier: multiValue,
-            Keys.overlayIgnoresMouse: ignoresMouse
-        ])
-
-        // Close window (if presented in a window)
-        view.window?.close()
+        guard !displays.isEmpty else { return }
+        let selectedDisplay = displays[displayPopup.indexOfSelectedItem]
+        guard let selectedItem = layoutPopup.selectedItem else { return }
+        let selectedId = (selectedItem.representedObject as? String) ?? selectedItem.title
+        LayoutManager.shared.setSelectedLayout(selectedId, forDisplayID: selectedDisplay.id)
+        // Show a small confirmation alert
+        let alert = NSAlert()
+        alert.messageText = "Saved"
+        alert.informativeText = "Saved layout '\(selectedItem.title)' for \(selectedDisplay.name)."
+        alert.addButton(withTitle: "OK")
+        alert.runModal()
     }
 
-    @objc private func cancelPressed(_ sender: Any?) {
+    @objc private func closePressed(_ sender: Any?) {
         view.window?.close()
     }
-}
-
-// Notification name for preference changes
-extension Notification.Name {
-    static let preferencesDidChange = Notification.Name("FracTile.PreferencesDidChange")
 }

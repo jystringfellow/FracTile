@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		599477DC2EB58A6F005BEB8C /* ZoneEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477DB2EB58A6A005BEB8C /* ZoneEngine.swift */; };
 		599477DE2EB58B00005BEB8C /* Snapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477DD2EB58AFB005BEB8C /* Snapping.swift */; };
-		599477E02EB58B2C005BEB8C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477DF2EB58B28005BEB8C /* AppDelegate.swift */; };
-		599477E22EB58B40005BEB8C /* StatusMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477E12EB58B3C005BEB8C /* StatusMenuController.swift */; };
 		599477E42EB58B58005BEB8C /* OverlayWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477E32EB58B53005BEB8C /* OverlayWindowController.swift */; };
 		599477E62EB58B6B005BEB8C /* EditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477E52EB58B66005BEB8C /* EditorViewController.swift */; };
 		599477E82EB58B7E005BEB8C /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477E72EB58B78005BEB8C /* PreferencesWindowController.swift */; };
@@ -19,6 +17,9 @@
 		599477EE2EB6DAE4005BEB8C /* OverlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477ED2EB6DAE1005BEB8C /* OverlayController.swift */; };
 		599477F02EB6DC88005BEB8C /* EditorWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477EF2EB6DC84005BEB8C /* EditorWindowController.swift */; };
 		599477F22EB6DD30005BEB8C /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477F12EB6DD2C005BEB8C /* PreferencesViewController.swift */; };
+		599477F72EB9612B005BEB8C /* LayoutModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477F62EB9611E005BEB8C /* LayoutModel.swift */; };
+		599477F92EB96144005BEB8C /* DefaultLayouts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477F82EB9613C005BEB8C /* DefaultLayouts.swift */; };
+		599477FB2EB96593005BEB8C /* LayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477FA2EB96588005BEB8C /* LayoutManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,8 +27,6 @@
 		599477732EAE6B3F005BEB8C /* FracTileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FracTileTests.swift; sourceTree = "<group>"; };
 		599477DB2EB58A6A005BEB8C /* ZoneEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneEngine.swift; sourceTree = "<group>"; };
 		599477DD2EB58AFB005BEB8C /* Snapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Snapping.swift; sourceTree = "<group>"; };
-		599477DF2EB58B28005BEB8C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		599477E12EB58B3C005BEB8C /* StatusMenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusMenuController.swift; sourceTree = "<group>"; };
 		599477E32EB58B53005BEB8C /* OverlayWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayWindowController.swift; sourceTree = "<group>"; };
 		599477E52EB58B66005BEB8C /* EditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorViewController.swift; sourceTree = "<group>"; };
 		599477E72EB58B78005BEB8C /* PreferencesWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesWindowController.swift; sourceTree = "<group>"; };
@@ -37,6 +36,10 @@
 		599477EF2EB6DC84005BEB8C /* EditorWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorWindowController.swift; sourceTree = "<group>"; };
 		599477F12EB6DD2C005BEB8C /* PreferencesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
 		599477F32EB91F91005BEB8C /* FracTile-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "FracTile-Info.plist"; sourceTree = "<group>"; };
+		599477F52EB95F1F005BEB8C /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
+		599477F62EB9611E005BEB8C /* LayoutModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutModel.swift; sourceTree = "<group>"; };
+		599477F82EB9613C005BEB8C /* DefaultLayouts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLayouts.swift; sourceTree = "<group>"; };
+		599477FA2EB96588005BEB8C /* LayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +56,7 @@
 		5994774D2EAE68C4005BEB8C = {
 			isa = PBXGroup;
 			children = (
+				599477F52EB95F1F005BEB8C /* .swiftlint.yml */,
 				599477F32EB91F91005BEB8C /* FracTile-Info.plist */,
 				599477742EAE6B3F005BEB8C /* Tests */,
 				599477722EAE6B20005BEB8C /* Sources */,
@@ -71,6 +75,9 @@
 		599477722EAE6B20005BEB8C /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				599477FA2EB96588005BEB8C /* LayoutManager.swift */,
+				599477F82EB9613C005BEB8C /* DefaultLayouts.swift */,
+				599477F62EB9611E005BEB8C /* LayoutModel.swift */,
 				599477F12EB6DD2C005BEB8C /* PreferencesViewController.swift */,
 				599477EF2EB6DC84005BEB8C /* EditorWindowController.swift */,
 				599477ED2EB6DAE1005BEB8C /* OverlayController.swift */,
@@ -79,8 +86,6 @@
 				599477E72EB58B78005BEB8C /* PreferencesWindowController.swift */,
 				599477E52EB58B66005BEB8C /* EditorViewController.swift */,
 				599477E32EB58B53005BEB8C /* OverlayWindowController.swift */,
-				599477E12EB58B3C005BEB8C /* StatusMenuController.swift */,
-				599477DF2EB58B28005BEB8C /* AppDelegate.swift */,
 				599477DD2EB58AFB005BEB8C /* Snapping.swift */,
 				599477DB2EB58A6A005BEB8C /* ZoneEngine.swift */,
 			);
@@ -170,11 +175,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				599477F72EB9612B005BEB8C /* LayoutModel.swift in Sources */,
+				599477F92EB96144005BEB8C /* DefaultLayouts.swift in Sources */,
 				599477F02EB6DC88005BEB8C /* EditorWindowController.swift in Sources */,
-				599477E02EB58B2C005BEB8C /* AppDelegate.swift in Sources */,
 				599477E62EB58B6B005BEB8C /* EditorViewController.swift in Sources */,
 				599477DC2EB58A6F005BEB8C /* ZoneEngine.swift in Sources */,
-				599477E22EB58B40005BEB8C /* StatusMenuController.swift in Sources */,
 				599477EA2EB58B8E005BEB8C /* AccessibilityHelper.swift in Sources */,
 				599477EC2EB6D8B8005BEB8C /* FractileApp.swift in Sources */,
 				599477EE2EB6DAE4005BEB8C /* OverlayController.swift in Sources */,
@@ -182,6 +187,7 @@
 				599477DE2EB58B00005BEB8C /* Snapping.swift in Sources */,
 				599477E42EB58B58005BEB8C /* OverlayWindowController.swift in Sources */,
 				599477F22EB6DD30005BEB8C /* PreferencesViewController.swift in Sources */,
+				599477FB2EB96593005BEB8C /* LayoutManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

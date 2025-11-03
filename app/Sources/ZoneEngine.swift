@@ -1,4 +1,3 @@
-//
 //  ZoneEngine.swift
 //  FracTile
 //
@@ -9,9 +8,9 @@ import Foundation
 import CoreGraphics
 
 // Constants matching the C++ implementation
-private let percentageMultiplier: Int = 10000
+private let percentageMultiplier: Int = cMultiplier
 
-// Simple Zone model
+// Simple Zone model (kept here since it's a runtime/engine concept)
 public struct Zone: Codable, Equatable {
     public let id: Int
     public let rect: CGRect
@@ -26,33 +25,12 @@ public struct Zone: Codable, Equatable {
     }
 }
 
-// Grid layout info (minimal info -> rows, columns, percents, and cell map)
-public struct GridLayoutInfo: Codable {
-    public var rows: Int
-    public var columns: Int
-    // Each percent list uses values summing to percentageMultiplier
-    public var rowsPercents: [Int]
-    public var columnsPercents: [Int]
-    // cellChildMap[row][col] -> zone index
-    public var cellChildMap: [[Int]]
-
-    public init(rows: Int, columns: Int) {
-        self.rows = rows
-        self.columns = columns
-        self.rowsPercents = Array(repeating: 0, count: rows)
-        self.columnsPercents = Array(repeating: 0, count: columns)
-        self.cellChildMap = Array(repeating: Array(repeating: 0, count: columns), count: rows)
-    }
-}
-
 public enum LayoutError: Error {
     case invalidZoneId
     case invalidZone
 }
 
-// Helper that mirrors LayoutConfigurator::CalculateGridZones
-// workArea uses CoreGraphics coordinates (origin at lower-left on macOS by default in some contexts,
-// but we'll treat given workArea consistently; callers must pass a screen-relative rect)
+// ZoneEngine: algorithms that operate on GridLayoutInfo from LayoutModel.swift
 public final class ZoneEngine {
     // Generate a grid layout info for a given zone count using the same rows/columns heuristic
     public static func generateGridLayoutInfo(zoneCount: Int) -> GridLayoutInfo {
