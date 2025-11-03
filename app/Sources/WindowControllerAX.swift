@@ -39,8 +39,8 @@ public final class WindowControllerAX {
         var focusedWindow: CFTypeRef?
         let result = AXUIElementCopyAttributeValue(appElement, kAXFocusedWindowAttribute as CFString, &focusedWindow)
         
-        if result == .success, let window = focusedWindow {
-            return (window as! AXUIElement)
+        if result == .success, let window = focusedWindow as? AXUIElement {
+            return window
         }
         
         return nil
@@ -56,16 +56,16 @@ public final class WindowControllerAX {
         let sizeResult = AXUIElementCopyAttributeValue(window, kAXSizeAttribute as CFString, &sizeValue)
         
         guard posResult == .success, sizeResult == .success,
-              let positionValue = positionValue,
-              let sizeValue = sizeValue else {
+              let positionValue = positionValue as? AXValue,
+              let sizeValue = sizeValue as? AXValue else {
             return nil
         }
         
         var position = CGPoint.zero
         var size = CGSize.zero
         
-        AXValueGetValue(positionValue as! AXValue, .cgPoint, &position)
-        AXValueGetValue(sizeValue as! AXValue, .cgSize, &size)
+        AXValueGetValue(positionValue, .cgPoint, &position)
+        AXValueGetValue(sizeValue, .cgSize, &size)
         
         return CGRect(origin: position, size: size)
     }
@@ -74,12 +74,12 @@ public final class WindowControllerAX {
     /// Returns true if successful, false otherwise
     @discardableResult
     public static func setWindowFrame(_ window: AXUIElement, frame: CGRect) -> Bool {
-        let newPosition = frame.origin
-        let newSize = frame.size
+        var newPosition = frame.origin
+        var newSize = frame.size
         
         // Create AXValue objects for position and size
-        guard let positionValue = AXValueCreate(.cgPoint, &newPosition.mutableCopy),
-              let sizeValue = AXValueCreate(.cgSize, &newSize.mutableCopy) else {
+        guard let positionValue = AXValueCreate(.cgPoint, &newPosition),
+              let sizeValue = AXValueCreate(.cgSize, &newSize) else {
             return false
         }
         
@@ -89,20 +89,5 @@ public final class WindowControllerAX {
         let sizeResult = AXUIElementSetAttributeValue(window, kAXSizeAttribute as CFString, sizeValue)
         
         return posResult == .success && sizeResult == .success
-    }
-}
-
-// Helper extension to get a mutable copy of CGPoint and CGSize
-private extension CGPoint {
-    var mutableCopy: CGPoint {
-        var copy = self
-        return withUnsafePointer(to: &copy) { $0.pointee }
-    }
-}
-
-private extension CGSize {
-    var mutableCopy: CGSize {
-        var copy = self
-        return withUnsafePointer(to: &copy) { $0.pointee }
     }
 }
