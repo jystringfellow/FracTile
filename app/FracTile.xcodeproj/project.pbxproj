@@ -1,0 +1,441 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		599477DC2EB58A6F005BEB8C /* ZoneEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477DB2EB58A6A005BEB8C /* ZoneEngine.swift */; };
+		599477DE2EB58B00005BEB8C /* Snapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477DD2EB58AFB005BEB8C /* Snapping.swift */; };
+		599477E42EB58B58005BEB8C /* OverlayWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477E32EB58B53005BEB8C /* OverlayWindowController.swift */; };
+		599477E62EB58B6B005BEB8C /* EditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477E52EB58B66005BEB8C /* EditorViewController.swift */; };
+		599477E82EB58B7E005BEB8C /* PreferencesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477E72EB58B78005BEB8C /* PreferencesWindowController.swift */; };
+		599477EA2EB58B8E005BEB8C /* AccessibilityHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477E92EB58B89005BEB8C /* AccessibilityHelper.swift */; };
+		599477EC2EB6D8B8005BEB8C /* FractileApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477EB2EB6D8B1005BEB8C /* FractileApp.swift */; };
+		599477EE2EB6DAE4005BEB8C /* OverlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477ED2EB6DAE1005BEB8C /* OverlayController.swift */; };
+		599477F02EB6DC88005BEB8C /* EditorWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477EF2EB6DC84005BEB8C /* EditorWindowController.swift */; };
+		599477F22EB6DD30005BEB8C /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477F12EB6DD2C005BEB8C /* PreferencesViewController.swift */; };
+		599477F72EB9612B005BEB8C /* LayoutModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477F62EB9611E005BEB8C /* LayoutModel.swift */; };
+		599477F92EB96144005BEB8C /* DefaultLayouts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477F82EB9613C005BEB8C /* DefaultLayouts.swift */; };
+		599477FB2EB96593005BEB8C /* LayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477FA2EB96588005BEB8C /* LayoutManager.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		599477562EAE68C4005BEB8C /* FracTile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FracTile.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		599477732EAE6B3F005BEB8C /* FracTileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FracTileTests.swift; sourceTree = "<group>"; };
+		599477DB2EB58A6A005BEB8C /* ZoneEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneEngine.swift; sourceTree = "<group>"; };
+		599477DD2EB58AFB005BEB8C /* Snapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Snapping.swift; sourceTree = "<group>"; };
+		599477E32EB58B53005BEB8C /* OverlayWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayWindowController.swift; sourceTree = "<group>"; };
+		599477E52EB58B66005BEB8C /* EditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorViewController.swift; sourceTree = "<group>"; };
+		599477E72EB58B78005BEB8C /* PreferencesWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesWindowController.swift; sourceTree = "<group>"; };
+		599477E92EB58B89005BEB8C /* AccessibilityHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityHelper.swift; sourceTree = "<group>"; };
+		599477EB2EB6D8B1005BEB8C /* FractileApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FractileApp.swift; sourceTree = "<group>"; };
+		599477ED2EB6DAE1005BEB8C /* OverlayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayController.swift; sourceTree = "<group>"; };
+		599477EF2EB6DC84005BEB8C /* EditorWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorWindowController.swift; sourceTree = "<group>"; };
+		599477F12EB6DD2C005BEB8C /* PreferencesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
+		599477F32EB91F91005BEB8C /* FracTile-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "FracTile-Info.plist"; sourceTree = "<group>"; };
+		599477F52EB95F1F005BEB8C /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
+		599477F62EB9611E005BEB8C /* LayoutModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutModel.swift; sourceTree = "<group>"; };
+		599477F82EB9613C005BEB8C /* DefaultLayouts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLayouts.swift; sourceTree = "<group>"; };
+		599477FA2EB96588005BEB8C /* LayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutManager.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		599477532EAE68C4005BEB8C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5994774D2EAE68C4005BEB8C = {
+			isa = PBXGroup;
+			children = (
+				599477F52EB95F1F005BEB8C /* .swiftlint.yml */,
+				599477F32EB91F91005BEB8C /* FracTile-Info.plist */,
+				599477742EAE6B3F005BEB8C /* Tests */,
+				599477722EAE6B20005BEB8C /* Sources */,
+				599477572EAE68C4005BEB8C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		599477572EAE68C4005BEB8C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				599477562EAE68C4005BEB8C /* FracTile.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		599477722EAE6B20005BEB8C /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				599477FA2EB96588005BEB8C /* LayoutManager.swift */,
+				599477F82EB9613C005BEB8C /* DefaultLayouts.swift */,
+				599477F62EB9611E005BEB8C /* LayoutModel.swift */,
+				599477F12EB6DD2C005BEB8C /* PreferencesViewController.swift */,
+				599477EF2EB6DC84005BEB8C /* EditorWindowController.swift */,
+				599477ED2EB6DAE1005BEB8C /* OverlayController.swift */,
+				599477EB2EB6D8B1005BEB8C /* FractileApp.swift */,
+				599477E92EB58B89005BEB8C /* AccessibilityHelper.swift */,
+				599477E72EB58B78005BEB8C /* PreferencesWindowController.swift */,
+				599477E52EB58B66005BEB8C /* EditorViewController.swift */,
+				599477E32EB58B53005BEB8C /* OverlayWindowController.swift */,
+				599477DD2EB58AFB005BEB8C /* Snapping.swift */,
+				599477DB2EB58A6A005BEB8C /* ZoneEngine.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		599477742EAE6B3F005BEB8C /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				599477732EAE6B3F005BEB8C /* FracTileTests.swift */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		599477552EAE68C4005BEB8C /* FracTile */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 599477612EAE68C4005BEB8C /* Build configuration list for PBXNativeTarget "FracTile" */;
+			buildPhases = (
+				599477522EAE68C4005BEB8C /* Sources */,
+				599477532EAE68C4005BEB8C /* Frameworks */,
+				599477542EAE68C4005BEB8C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				599477822EAFB18F005BEB8C /* PBXTargetDependency */,
+			);
+			name = FracTile;
+			packageProductDependencies = (
+			);
+			productName = FracTile;
+			productReference = 599477562EAE68C4005BEB8C /* FracTile.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5994774E2EAE68C4005BEB8C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					599477552EAE68C4005BEB8C = {
+						CreatedOnToolsVersion = 26.0.1;
+					};
+				};
+			};
+			buildConfigurationList = 599477512EAE68C4005BEB8C /* Build configuration list for PBXProject "FracTile" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 5994774D2EAE68C4005BEB8C;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				5994777E2EAFAF26005BEB8C /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 599477572EAE68C4005BEB8C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				599477552EAE68C4005BEB8C /* FracTile */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		599477542EAE68C4005BEB8C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		599477522EAE68C4005BEB8C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				599477F72EB9612B005BEB8C /* LayoutModel.swift in Sources */,
+				599477F92EB96144005BEB8C /* DefaultLayouts.swift in Sources */,
+				599477F02EB6DC88005BEB8C /* EditorWindowController.swift in Sources */,
+				599477E62EB58B6B005BEB8C /* EditorViewController.swift in Sources */,
+				599477DC2EB58A6F005BEB8C /* ZoneEngine.swift in Sources */,
+				599477EA2EB58B8E005BEB8C /* AccessibilityHelper.swift in Sources */,
+				599477EC2EB6D8B8005BEB8C /* FractileApp.swift in Sources */,
+				599477EE2EB6DAE4005BEB8C /* OverlayController.swift in Sources */,
+				599477E82EB58B7E005BEB8C /* PreferencesWindowController.swift in Sources */,
+				599477DE2EB58B00005BEB8C /* Snapping.swift in Sources */,
+				599477E42EB58B58005BEB8C /* OverlayWindowController.swift in Sources */,
+				599477F22EB6DD30005BEB8C /* PreferencesViewController.swift in Sources */,
+				599477FB2EB96593005BEB8C /* LayoutManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		599477822EAFB18F005BEB8C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 599477812EAFB18F005BEB8C /* SwiftLintBuildToolPlugin */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		5994775F2EAE68C4005BEB8C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 6T7K8KMSN3;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		599477602EAE68C4005BEB8C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 6T7K8KMSN3;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.6;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		599477622EAE68C4005BEB8C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6T7K8KMSN3;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "FracTile-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = FracTile;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jystringfellow.FracTile;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		599477632EAE68C4005BEB8C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6T7K8KMSN3;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "FracTile-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = FracTile;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jystringfellow.FracTile;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		599477512EAE68C4005BEB8C /* Build configuration list for PBXProject "FracTile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5994775F2EAE68C4005BEB8C /* Debug */,
+				599477602EAE68C4005BEB8C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		599477612EAE68C4005BEB8C /* Build configuration list for PBXNativeTarget "FracTile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				599477622EAE68C4005BEB8C /* Debug */,
+				599477632EAE68C4005BEB8C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		5994777E2EAFAF26005BEB8C /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.62.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		599477812EAFB18F005BEB8C /* SwiftLintBuildToolPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5994777E2EAFAF26005BEB8C /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
+			productName = "plugin:SwiftLintBuildToolPlugin";
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 5994774E2EAE68C4005BEB8C /* Project object */;
+}
