@@ -39,8 +39,8 @@ public final class WindowControllerAX {
         var focusedWindow: CFTypeRef?
         let result = AXUIElementCopyAttributeValue(appElement, kAXFocusedWindowAttribute as CFString, &focusedWindow)
         
-        if result == .success, let window = focusedWindow as? AXUIElement {
-            return window
+        if result == .success, let window = focusedWindow {
+            return (window as AXUIElement)
         }
         
         return nil
