@@ -17,6 +17,9 @@ final class OverlayController: ObservableObject {
     private let overlayWC = OverlayWindowController()
 
     @Published private(set) var isVisible = false
+    
+    /// Current zones being displayed by the overlay
+    @Published private(set) var currentZones: [CGRect] = []
 
     private init() {}
 
@@ -39,6 +42,7 @@ final class OverlayController: ObservableObject {
     }
 
     func updateZones(_ zones: [CGRect]) {
+        currentZones = zones
         overlayWC.updateZones(zones)
     }
 }
