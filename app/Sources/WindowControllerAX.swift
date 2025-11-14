@@ -16,8 +16,13 @@ import ApplicationServices
 public final class WindowControllerAX {
     
     /// Check if the app has Accessibility permission
-    public static func hasAccessibilityPermission() -> Bool {
-        return AXIsProcessTrusted()
+    /// - Parameter prompt: When true, will request the system prompt that suggests enabling Accessibility for this app.
+    public static func hasAccessibilityPermission(prompt: Bool = false) -> Bool {
+        if prompt {
+            return AccessibilityHelper.shared.requestSystemPrompt()
+        } else {
+            return AccessibilityHelper.shared.hasAccessibilityPermission()
+        }
     }
     
     /// Get the AXUIElement for the currently focused window
@@ -40,7 +45,7 @@ public final class WindowControllerAX {
         let result = AXUIElementCopyAttributeValue(appElement, kAXFocusedWindowAttribute as CFString, &focusedWindow)
         
         if result == .success, let window = focusedWindow {
-            return (window as AXUIElement)
+            return unsafeBitCast(window, to: AXUIElement.self)
         }
         
         return nil
@@ -54,13 +59,13 @@ public final class WindowControllerAX {
         
         let posResult = AXUIElementCopyAttributeValue(window, kAXPositionAttribute as CFString, &positionValue)
         let sizeResult = AXUIElementCopyAttributeValue(window, kAXSizeAttribute as CFString, &sizeValue)
-        
+
         guard posResult == .success, sizeResult == .success,
-              let positionValue = positionValue as? AXValue,
-              let sizeValue = sizeValue as? AXValue else {
+              let positionValue = unsafeBitCast(positionValue, to: AXValue?.self),
+              let sizeValue = unsafeBitCast(sizeValue, to: AXValue?.self) else {
             return nil
         }
-        
+
         var position = CGPoint.zero
         var size = CGSize.zero
         

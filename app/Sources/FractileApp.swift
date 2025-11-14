@@ -9,11 +9,60 @@ import SwiftUI
 import AppKit
 
 @main
-struct MenuBarExampleApp: App {
+struct FracTileApp: App {
     @StateObject private var overlayController = OverlayController.shared
 
+    init() {
+        startupSequence()
+    }
+
+    /// Run lightweight startup tasks in order: avoid duplicates, load defaults, then check accessibility.
+    private func startupSequence() {
+        checkIfRunning()
+        loadLayouts()
+        checkAccessibilityOnStartup()
+    }
+
+    /// Check for an existing running instance of this app and exit if another instance is active.
+    private func checkIfRunning() {
+        let notificationName = "FracTile.CheckIfRunning"
+        _ = Notification.Name(notificationName)
+
+        let runningApps = NSWorkspace.shared.runningApplications
+        let isRunning = runningApps.contains {
+            $0.bundleIdentifier == Bundle.main.bundleIdentifier && $0.processIdentifier != ProcessInfo.processInfo.processIdentifier
+        }
+
+        if isRunning {
+            let alert = NSAlert()
+            alert.window.level = .screenSaver
+            alert.window.collectionBehavior = [.canJoinAllSpaces, .stationary, .ignoresCycle]
+            alert.alertStyle = .critical
+            alert.messageText = "FracTile is already running"
+            alert.informativeText = "Another instance of FracTile is already running. This instance will exit."
+            alert.addButton(withTitle: "OK")
+
+            alert.window.center()
+            alert.window.makeKeyAndOrderFront(nil)
+            NSApplication.shared.activate(ignoringOtherApps: true)
+
+            alert.runModal()
+
+            NSApp.terminate(nil)
+            return
+        }
+    }
+
+    /// Load  layouts (lightweight) so the app has defaults ready. We don't show overlays here.
+    private func loadLayouts() {
+        let displays = LayoutManager.shared.availableDisplays()
+        for display in displays {
+            _ = LayoutManager.shared.selectedZoneSet(forDisplayID: display.id)
+        }
+    }
+
     var body: some Scene {
-        MenuBarExtra("FracTile", systemImage: "square.grid.2x2") {
+        MenuBarExtra("FracTile", image: .init("MenuBarIcon")) {
             VStack(spacing: 12) {
                 Text("FracTile")
                     .font(.headline)
@@ -36,9 +85,9 @@ struct MenuBarExampleApp: App {
                     PreferencesWindowController.shared.showPreferences()
                 }
                 .keyboardShortcut(",", modifiers: [.command])
-                
+
                 Divider()
-                
+
                 Button("Snap Focused Window") {
                     snapFocusedWindow()
                 }
@@ -59,54 +108,20 @@ struct MenuBarExampleApp: App {
     
     /// Snap the focused window to a zone in the current overlay
     private func snapFocusedWindow() {
-        // Check for Accessibility permission first
-        guard WindowControllerAX.hasAccessibilityPermission() else {
-            showAccessibilityAlert()
-            return
-        }
-        
-        // Get current zones from the overlay
         let zones = overlayController.currentZones
-        
+ 
         guard !zones.isEmpty else {
             showNoZonesAlert()
             return
         }
-        
-        // Attempt to snap the focused window
+ 
         let success = SnapController.shared.snapFocusedWindow(to: zones)
-        
+ 
         if !success {
             showSnapFailedAlert()
         }
     }
-    
-    /// Show an alert when Accessibility permission is not granted
-    private func showAccessibilityAlert() {
-        DispatchQueue.main.async {
-            let alert = NSAlert()
-            alert.messageText = "Accessibility Permission Required"
-            alert.informativeText = """
-            FracTile needs Accessibility permission to move and resize windows.
-            
-            Please grant permission in:
-            System Settings → Privacy & Security → Accessibility
-            
-            Add FracTile to the list and enable it.
-            """
-            alert.addButton(withTitle: "Open System Settings")
-            alert.addButton(withTitle: "Cancel")
-            alert.alertStyle = .warning
-            
-            let response = alert.runModal()
-            if response == .alertFirstButtonReturn {
-                if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
-                    NSWorkspace.shared.open(url)
-                }
-            }
-        }
-    }
-    
+
     /// Show an alert when no zones are available
     private func showNoZonesAlert() {
         DispatchQueue.main.async {
@@ -135,6 +150,13 @@ struct MenuBarExampleApp: App {
             alert.addButton(withTitle: "OK")
             alert.alertStyle = .warning
             alert.runModal()
+        }
+    }
+
+    /// Check accessibility permission once at app startup and prompt/show instructions if needed.
+    private func checkAccessibilityOnStartup() {
+        DispatchQueue.main.async {
+            AccessibilityHelper.shared.checkAndPromptIfNeeded()
         }
     }
 }
