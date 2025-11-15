@@ -89,11 +89,20 @@ struct FracTileApp: App {
                 multiZoneKey: $multiZoneKey,
                 modifierChoices: modifierChoices,
                 onEdit: {
-                    EditorWindowController.shared.showEditor()
+                    // Edit placeholder
+                    let alert = NSAlert()
+                    alert.messageText = "Edit Layout"
+                    alert.informativeText = "Editing layouts is not implemented yet."
+                    alert.addButton(withTitle: "OK")
+                    alert.runModal()
                 },
                 onAdd: {
-                    // Placeholder: add flow
-                    EditorWindowController.shared.showEditor()
+                    // Add placeholder
+                    let alert = NSAlert()
+                    alert.messageText = "Add Layout"
+                    alert.informativeText = "Adding layouts is not implemented yet."
+                    alert.addButton(withTitle: "OK")
+                    alert.runModal()
                 },
                 onImport: {
                     // Import will open the editor where the import UI lives
@@ -103,7 +112,7 @@ struct FracTileApp: App {
                     // Delete placeholder
                     let alert = NSAlert()
                     alert.messageText = "Delete Layout"
-                    alert.informativeText = "Deleting custom layouts is not implemented yet."
+                    alert.informativeText = "Deleting layouts is not implemented yet."
                     alert.addButton(withTitle: "OK")
                     alert.runModal()
                 },
