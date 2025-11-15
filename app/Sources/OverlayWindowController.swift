@@ -47,6 +47,16 @@ final class OverlayWindowController: NSWindowController {
         }
     }
 
+    // Show overlay on a specific screen
+    func showOverlay(on screen: NSScreen) {
+        guard let window = window else { return }
+        if window.isVisible {
+            window.orderOut(nil)
+        }
+        window.setFrame(screen.frame, display: true)
+        window.makeKeyAndOrderFront(nil)
+    }
+
     func hideOverlay() {
         window?.orderOut(nil)
     }
@@ -55,10 +65,17 @@ final class OverlayWindowController: NSWindowController {
         contentView?.zones = zones
         contentView?.needsDisplay = true
     }
+
+    // Highlight specific zone indices (useful while dragging)
+    func highlightZones(_ indices: [Int]) {
+        contentView?.highlightedIndices = Set(indices)
+        contentView?.needsDisplay = true
+    }
 }
 
 final class OverlayContentView: NSView {
     var zones: [CGRect] = []
+    var highlightedIndices: Set<Int> = []
 
     override func draw(_ dirtyRect: NSRect) {
         super.draw(dirtyRect)
@@ -98,21 +115,44 @@ final class OverlayContentView: NSView {
     }
 
     private func drawZones(in rect: NSRect) {
-        for zone in zones {
+        for (index, zone) in zones.enumerated() {
             let localRect = convertFromScreenRect(zone)
             let rounded = NSBezierPath(roundedRect: localRect, xRadius: 6, yRadius: 6)
-            NSColor.systemBlue.withAlphaComponent(0.18).setFill()
-            rounded.fill()
-            NSColor.systemBlue.withAlphaComponent(0.9).setStroke()
-            rounded.lineWidth = 2.0
-            rounded.stroke()
+
+            if highlightedIndices.contains(index) {
+                NSColor.systemBlue.withAlphaComponent(0.3).setFill()
+                rounded.fill()
+                NSColor.systemBlue.withAlphaComponent(1.0).setStroke()
+                rounded.lineWidth = 3.0
+                rounded.stroke()
+            } else {
+                NSColor.systemBlue.withAlphaComponent(0.18).setFill()
+                rounded.fill()
+                NSColor.systemBlue.withAlphaComponent(0.9).setStroke()
+                rounded.lineWidth = 2.0
+                rounded.stroke()
+            }
         }
     }
 
     private func convertFromScreenRect(_ screenRect: CGRect) -> CGRect {
-        let windowOrigin = window?.frame.origin ?? .zero
-        let localX = screenRect.origin.x - windowOrigin.x
-        let localY = screenRect.origin.y - windowOrigin.y
+        guard let windowFrame = window?.frame else { return screenRect }
+        
+        // Screen coordinates have y=0 at bottom, but NSView has y=0 at top
+        // Convert from screen coordinates to view coordinates
+        let localX = screenRect.origin.x - windowFrame.origin.x
+        
+        // Flip Y coordinate: screen Y is from bottom, view Y is from top
+        // screenRect.origin.y is measured from bottom of screen
+        // We need to convert to top-origin coordinate system
+        let screenBottom = screenRect.origin.y
+        let screenTop = screenBottom + screenRect.height
+        let windowBottom = windowFrame.origin.y
+        let windowTop = windowBottom + windowFrame.height
+        
+        // Distance from top of window to top of zone
+        let localY = windowTop - screenTop
+        
         return CGRect(x: localX, y: localY, width: screenRect.width, height: screenRect.height)
     }
 }

@@ -31,6 +31,10 @@ struct FracTileApp: App {
     init() {
         if !isPreview {
             startupSequence()
+            // Start drag snapping monitors
+            DispatchQueue.main.async {
+                DragSnapController.shared.start()
+            }
         }
     }
 

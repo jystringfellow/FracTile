@@ -95,4 +95,26 @@ public final class WindowControllerAX {
         
         return posResult == .success && sizeResult == .success
     }
+    
+    /// Get the AXUIElement for the window under a screen point (global coordinates)
+    public static func getWindowUnderPoint(_ point: CGPoint) -> AXUIElement? {
+        guard hasAccessibilityPermission() else { return nil }
+
+        let system = AXUIElementCreateSystemWide()
+        var element: AXUIElement? = nil
+        let result = AXUIElementCopyElementAtPosition(system, Float(point.x), Float(point.y), &element)
+        if result != AXError.success || element == nil { return nil }
+
+        let elementRef = element!
+
+        // Try to get the window attribute for the element
+        var windowValue: CFTypeRef?
+        let windowResult = AXUIElementCopyAttributeValue(elementRef, kAXWindowAttribute as CFString, &windowValue)
+        if windowResult == AXError.success, let windowValue = windowValue {
+            return unsafeBitCast(windowValue, to: AXUIElement.self)
+        }
+
+        // If there's no explicit window attribute, return the element itself
+        return elementRef
+    }
 }
