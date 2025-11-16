@@ -64,17 +64,14 @@ final class DragSnapController {
         // Check if we should show overlay
         updateOverlayVisibility()
     }
-
+    
     private func handleMouseDragged(_ event: NSEvent) {
-        guard isDragging else { return }
-        
-        // Update overlay visibility based on current modifier state
-        updateOverlayVisibility()
-        
-        // Only update highlights if overlay is visible
-        guard OverlayController.shared.isVisible else { return }
-        
-        let globalPoint = NSEvent.mouseLocation
+        guard isDragging, let screen = overlayScreen else { return }
+        var globalPoint = NSEvent.mouseLocation
+
+        // Convert mouse location from bottom-left origin to top-left origin
+        // to match the coordinate system of the calculated zone rects.
+        globalPoint.y = screen.frame.height - globalPoint.y
 
         var newHighlightedIndices: Set<Int> = []
         for (index, zoneRect) in activeZones.enumerated() {
