@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		593A9CFE2EC3F38700C3CF08 /* Assets.xcassets in Sources */ = {isa = PBXBuildFile; fileRef = 59B0FE042EBD7607004A5696 /* Assets.xcassets */; };
 		599477DC2EB58A6F005BEB8C /* ZoneEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477DB2EB58A6A005BEB8C /* ZoneEngine.swift */; };
 		599477DE2EB58B00005BEB8C /* Snapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477DD2EB58AFB005BEB8C /* Snapping.swift */; };
 		599477E42EB58B58005BEB8C /* OverlayWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477E32EB58B53005BEB8C /* OverlayWindowController.swift */; };
@@ -20,6 +21,11 @@
 		599477F72EB9612B005BEB8C /* LayoutModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477F62EB9611E005BEB8C /* LayoutModel.swift */; };
 		599477F92EB96144005BEB8C /* DefaultLayouts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477F82EB9613C005BEB8C /* DefaultLayouts.swift */; };
 		599477FB2EB96593005BEB8C /* LayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477FA2EB96588005BEB8C /* LayoutManager.swift */; };
+		599478082EB98B75005BEB8C /* WindowControllerAX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599478072EB98B75005BEB8C /* WindowControllerAX.swift */; };
+		599478092EB98B75005BEB8C /* EventMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599478052EB98B75005BEB8C /* EventMonitor.swift */; };
+		5994780A2EB98B75005BEB8C /* SnapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599478062EB98B75005BEB8C /* SnapController.swift */; };
+		59B0FE032EBD75BA004A5696 /* FracTile.png in Resources */ = {isa = PBXBuildFile; fileRef = 59B0FE022EBD75BA004A5696 /* FracTile.png */; };
+		59B0FE062EBD7607004A5696 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59B0FE042EBD7607004A5696 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +46,11 @@
 		599477F62EB9611E005BEB8C /* LayoutModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutModel.swift; sourceTree = "<group>"; };
 		599477F82EB9613C005BEB8C /* DefaultLayouts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLayouts.swift; sourceTree = "<group>"; };
 		599477FA2EB96588005BEB8C /* LayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutManager.swift; sourceTree = "<group>"; };
+		599478052EB98B75005BEB8C /* EventMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventMonitor.swift; sourceTree = "<group>"; };
+		599478062EB98B75005BEB8C /* SnapController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapController.swift; sourceTree = "<group>"; };
+		599478072EB98B75005BEB8C /* WindowControllerAX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowControllerAX.swift; sourceTree = "<group>"; };
+		59B0FE022EBD75BA004A5696 /* FracTile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FracTile.png; sourceTree = "<group>"; };
+		59B0FE042EBD7607004A5696 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,11 +67,13 @@
 		5994774D2EAE68C4005BEB8C = {
 			isa = PBXGroup;
 			children = (
+				59B0FE052EBD7607004A5696 /* Resources */,
 				599477F52EB95F1F005BEB8C /* .swiftlint.yml */,
 				599477F32EB91F91005BEB8C /* FracTile-Info.plist */,
 				599477742EAE6B3F005BEB8C /* Tests */,
 				599477722EAE6B20005BEB8C /* Sources */,
 				599477572EAE68C4005BEB8C /* Products */,
+				59B0FE022EBD75BA004A5696 /* FracTile.png */,
 			);
 			sourceTree = "<group>";
 		};
@@ -75,6 +88,9 @@
 		599477722EAE6B20005BEB8C /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				599478052EB98B75005BEB8C /* EventMonitor.swift */,
+				599478062EB98B75005BEB8C /* SnapController.swift */,
+				599478072EB98B75005BEB8C /* WindowControllerAX.swift */,
 				599477FA2EB96588005BEB8C /* LayoutManager.swift */,
 				599477F82EB9613C005BEB8C /* DefaultLayouts.swift */,
 				599477F62EB9611E005BEB8C /* LayoutModel.swift */,
@@ -98,6 +114,14 @@
 				599477732EAE6B3F005BEB8C /* FracTileTests.swift */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		59B0FE052EBD7607004A5696 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				59B0FE042EBD7607004A5696 /* Assets.xcassets */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -165,6 +189,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				59B0FE062EBD7607004A5696 /* Assets.xcassets in Resources */,
+				59B0FE032EBD75BA004A5696 /* FracTile.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -175,6 +201,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				593A9CFE2EC3F38700C3CF08 /* Assets.xcassets in Sources */,
 				599477F72EB9612B005BEB8C /* LayoutModel.swift in Sources */,
 				599477F92EB96144005BEB8C /* DefaultLayouts.swift in Sources */,
 				599477F02EB6DC88005BEB8C /* EditorWindowController.swift in Sources */,
@@ -187,6 +214,9 @@
 				599477DE2EB58B00005BEB8C /* Snapping.swift in Sources */,
 				599477E42EB58B58005BEB8C /* OverlayWindowController.swift in Sources */,
 				599477F22EB6DD30005BEB8C /* PreferencesViewController.swift in Sources */,
+				599478082EB98B75005BEB8C /* WindowControllerAX.swift in Sources */,
+				599478092EB98B75005BEB8C /* EventMonitor.swift in Sources */,
+				5994780A2EB98B75005BEB8C /* SnapController.swift in Sources */,
 				599477FB2EB96593005BEB8C /* LayoutManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -326,15 +356,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6T7K8KMSN3;
-				ENABLE_APP_SANDBOX = YES;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "FracTile-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = FracTile;
@@ -363,15 +393,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6T7K8KMSN3;
-				ENABLE_APP_SANDBOX = YES;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "FracTile-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = FracTile;

@@ -22,14 +22,12 @@ public final class LayoutManager {
 
     private init() {}
 
-    // Return an array of (displayID: Int, displayName: String, screen: NSScreen)
-    // displayID is the NSScreenNumber (CGDirectDisplayID) -> use deviceDescription
     public func availableDisplays() -> [(id: Int, name: String, screen: NSScreen)] {
         var results: [(Int, String, NSScreen)] = []
         for screen in NSScreen.screens {
             if let number = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber {
                 let displayID = number.intValue
-                let name = displayName(for: screen, id: displayID)
+                let name = displayName(for: screen)
                 results.append((displayID, name, screen))
             } else {
                 // fallback: use index-based id
@@ -40,11 +38,10 @@ public final class LayoutManager {
         return results
     }
 
-    private func displayName(for screen: NSScreen, id: Int) -> String {
-        // Try a friendly label including pixel size; this is not guaranteed unique but useful in UI
+    private func displayName(for screen: NSScreen) -> String {
         let size = screen.frame.size
-        let scale = screen.backingScaleFactor
-        return "Display \(id) — \(Int(size.width))×\(Int(size.height)) @\(scale)x"
+        let name = screen.localizedName
+        return "\(name) (\(Int(size.width))×\(Int(size.height)))"
     }
 
     // Persist selected ZoneSet id for a display
