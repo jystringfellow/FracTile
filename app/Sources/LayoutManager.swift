@@ -82,27 +82,29 @@ public final class LayoutManager {
         switch zoneSet.type {
         case .grid, .priorityGrid, .rows, .columns, .focus:
             guard let grid = zoneSet.gridInfo else { return }
-            let zones = ZoneEngine.calculateGridZones(workArea: workArea, gridInfo: grid, spacing: zoneSet.spacing)
-            // Convert engine Zone -> CGRect array expected by OverlayController
-            let rects = zones.map { $0.rect }
+            let zones = ZoneEngine.calculateGridZones(workArea: workArea, on: screen, gridInfo: grid, spacing: zoneSet.spacing)
+            // Extract InternalRect array from zones
+            let internalRects = zones.map { $0.rect }
             DispatchQueue.main.async {
-                OverlayController.shared.updateZones(rects)
+                OverlayController.shared.updateZones(internalRects, screen: screen)
                 OverlayController.shared.showOverlay()
             }
         case .canvas:
             // For canvas layouts scale saved canvas zones to current screen size
             if let canvas = zoneSet.canvasInfo {
-                let rects = canvas.zones.map { canvasZone -> CGRect in
-                    let scaleX = CGFloat(workArea.width) / CGFloat(max(1, canvas.lastWorkAreaWidth))
-                    let scaleY = CGFloat(workArea.height) / CGFloat(max(1, canvas.lastWorkAreaHeight))
-                    let zoneOriginX = workArea.origin.x + CGFloat(canvasZone.x) * scaleX
-                    let zoneOriginY = workArea.origin.y + CGFloat(canvasZone.y) * scaleY
+                // Convert bottom-left workArea to internal coordinates for canvas layout
+                let internalWorkArea = InternalRect(fromBottomLeft: workArea, screen: screen)
+                let internalRects = canvas.zones.map { canvasZone -> InternalRect in
+                    let scaleX = internalWorkArea.width / CGFloat(max(1, canvas.lastWorkAreaWidth))
+                    let scaleY = internalWorkArea.height / CGFloat(max(1, canvas.lastWorkAreaHeight))
+                    let zoneX = internalWorkArea.x + CGFloat(canvasZone.x) * scaleX
+                    let zoneY = internalWorkArea.y + CGFloat(canvasZone.y) * scaleY
                     let zoneWidth = CGFloat(canvasZone.width) * scaleX
                     let zoneHeight = CGFloat(canvasZone.height) * scaleY
-                    return CGRect(x: zoneOriginX, y: zoneOriginY, width: zoneWidth, height: zoneHeight)
+                    return InternalRect(x: zoneX, y: zoneY, width: zoneWidth, height: zoneHeight)
                 }
                 DispatchQueue.main.async {
-                    OverlayController.shared.updateZones(rects)
+                    OverlayController.shared.updateZones(internalRects, screen: screen)
                     OverlayController.shared.showOverlay()
                 }
             }

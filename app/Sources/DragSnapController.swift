@@ -14,7 +14,7 @@ final class DragSnapController {
     private var flagsChangedMonitor: Any?
 
     private var isDragging = false
-    private var activeZones: [CGRect] = []
+    private var activeZones: [InternalRect] = []
     private var highlightedZoneIndices: Set<Int> = []
     private var overlayScreen: NSScreen?
 
@@ -67,15 +67,14 @@ final class DragSnapController {
     
     private func handleMouseDragged(_ event: NSEvent) {
         guard isDragging, let screen = overlayScreen else { return }
-        var globalPoint = NSEvent.mouseLocation
-
-        // Convert mouse location from bottom-left origin to top-left origin
-        // to match the coordinate system of the calculated zone rects.
-        globalPoint.y = screen.frame.height - globalPoint.y
+        
+        // Convert mouse location from bottom-left origin to internal top-left coordinates
+        let mouseLocationBottomLeft = NSEvent.mouseLocation
+        let internalPoint = InternalPoint(fromBottomLeft: mouseLocationBottomLeft, screen: screen)
 
         var newHighlightedIndices: Set<Int> = []
         for (index, zoneRect) in activeZones.enumerated() {
-            if zoneRect.contains(globalPoint) {
+            if zoneRect.contains(internalPoint) {
                 newHighlightedIndices.insert(index)
             }
         }
@@ -113,8 +112,10 @@ final class DragSnapController {
                 targetWindow = WindowControllerAX.getWindowUnderPoint(releasePoint)
             }
 
-            if let windowElement = targetWindow, !finalIndices.isEmpty {
-                let targetRect = activeZones[finalIndices[0]]
+            if let windowElement = targetWindow, !finalIndices.isEmpty, let screen = overlayScreen {
+                // Convert InternalRect to bottom-left CGRect for Accessibility API
+                let targetInternalRect = activeZones[finalIndices[0]]
+                let targetRect = targetInternalRect.cgRect(for: screen)
                 _ = WindowControllerAX.setWindowFrame(windowElement, frame: targetRect)
             }
         }
@@ -150,7 +151,7 @@ final class DragSnapController {
                     let zoneSet = LayoutManager.shared.selectedZoneSet(forDisplayID: displayId)
                     if let gridInfo = zoneSet.gridInfo {
                         let workArea = screenForPoint.visibleFrame
-                        let computedZones = ZoneEngine.calculateGridZones(workArea: workArea, gridInfo: gridInfo, spacing: zoneSet.spacing)
+                        let computedZones = ZoneEngine.calculateGridZones(workArea: workArea, on: screenForPoint, gridInfo: gridInfo, spacing: zoneSet.spacing)
                         activeZones = computedZones.map { $0.rect }
                     }
                 }
@@ -158,7 +159,7 @@ final class DragSnapController {
             
             if !activeZones.isEmpty, let screen = overlayScreen {
                 DispatchQueue.main.async {
-                    OverlayController.shared.updateZones(self.activeZones)
+                    OverlayController.shared.updateZones(self.activeZones, screen: screen)
                     OverlayController.shared.showOverlay(on: screen)
                 }
             }
@@ -177,15 +178,16 @@ final class DragSnapController {
         return currentFlags.contains(requiredFlags)
     }
 
-    private func nearestZone(to point: CGPoint) -> CGRect? {
-        var nearestRect: CGRect?
+    private func nearestZone(to point: InternalPoint) -> InternalRect? {
+        var nearestRect: InternalRect?
         var minDistance: CGFloat = .infinity
         for zoneRect in activeZones {
-            let center = CGPoint(x: zoneRect.midX, y: zoneRect.midY)
-            let dx = center.x - point.x
-            let dy = center.y - point.y
-            let distance = sqrt(dx * dx + dy * dy)
-            if distance < minDistance { minDistance = distance; nearestRect = zoneRect }
+            let center = zoneRect.center
+            let distance = point.distance(to: center)
+            if distance < minDistance {
+                minDistance = distance
+                nearestRect = zoneRect
+            }
         }
         return nearestRect
     }

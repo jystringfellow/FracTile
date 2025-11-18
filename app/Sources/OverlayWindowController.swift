@@ -61,8 +61,9 @@ final class OverlayWindowController: NSWindowController {
         window?.orderOut(nil)
     }
 
-    func updateZones(_ zones: [CGRect]) {
+    func updateZones(_ zones: [InternalRect], screen: NSScreen) {
         contentView?.zones = zones
+        contentView?.screen = screen
         contentView?.needsDisplay = true
     }
 
@@ -74,7 +75,8 @@ final class OverlayWindowController: NSWindowController {
 }
 
 final class OverlayContentView: NSView {
-    var zones: [CGRect] = []
+    var zones: [InternalRect] = []
+    var screen: NSScreen?
     var highlightedIndices: Set<Int> = []
 
     override func draw(_ dirtyRect: NSRect) {
@@ -116,7 +118,9 @@ final class OverlayContentView: NSView {
 
     private func drawZones(in rect: NSRect) {
         for (index, zone) in zones.enumerated() {
-            let localRect = convertFromScreenRect(zone)
+            // InternalRect uses top-left origin, same as NSView
+            // So we can use .cgRect directly for drawing
+            let localRect = zone.cgRect
             let rounded = NSBezierPath(roundedRect: localRect, xRadius: 6, yRadius: 6)
 
             if highlightedIndices.contains(index) {
@@ -133,26 +137,5 @@ final class OverlayContentView: NSView {
                 rounded.stroke()
             }
         }
-    }
-
-    private func convertFromScreenRect(_ screenRect: CGRect) -> CGRect {
-        guard let windowFrame = window?.frame else { return screenRect }
-        
-        // Screen coordinates have y=0 at bottom, but NSView has y=0 at top
-        // Convert from screen coordinates to view coordinates
-        let localX = screenRect.origin.x - windowFrame.origin.x
-        
-        // Flip Y coordinate: screen Y is from bottom, view Y is from top
-        // screenRect.origin.y is measured from bottom of screen
-        // We need to convert to top-origin coordinate system
-        let screenBottom = screenRect.origin.y
-        let screenTop = screenBottom + screenRect.height
-        let windowBottom = windowFrame.origin.y
-        let windowTop = windowBottom + windowFrame.height
-        
-        // Distance from top of window to top of zone
-        let localY = windowTop - screenTop
-        
-        return CGRect(x: localX, y: localY, width: screenRect.width, height: screenRect.height)
     }
 }

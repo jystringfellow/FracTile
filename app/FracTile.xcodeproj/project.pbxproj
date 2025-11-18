@@ -10,6 +10,8 @@
 		593A9CFE2EC3F38700C3CF08 /* Assets.xcassets in Sources */ = {isa = PBXBuildFile; fileRef = 59B0FE042EBD7607004A5696 /* Assets.xcassets */; };
 		5961FC9D2EC8D7130033B4FF /* DragSnapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5961FC9C2EC8D7130033B4FF /* DragSnapController.swift */; };
 		5961FC9F2EC8DE5C0033B4FF /* FancyZones-Requirements.md in Resources */ = {isa = PBXBuildFile; fileRef = 5961FC9E2EC8DE4B0033B4FF /* FancyZones-Requirements.md */; };
+		5961FCA12ECA24C90033B4FF /* InternalRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5961FCA02ECA24C30033B4FF /* InternalRect.swift */; };
+		5961FCA32ECA24E00033B4FF /* InternalPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5961FCA22ECA24D90033B4FF /* InternalPoint.swift */; };
 		599477DC2EB58A6F005BEB8C /* ZoneEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477DB2EB58A6A005BEB8C /* ZoneEngine.swift */; };
 		599477DE2EB58B00005BEB8C /* Snapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477DD2EB58AFB005BEB8C /* Snapping.swift */; };
 		599477E42EB58B58005BEB8C /* OverlayWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477E32EB58B53005BEB8C /* OverlayWindowController.swift */; };
@@ -33,6 +35,8 @@
 /* Begin PBXFileReference section */
 		5961FC9C2EC8D7130033B4FF /* DragSnapController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragSnapController.swift; sourceTree = "<group>"; };
 		5961FC9E2EC8DE4B0033B4FF /* FancyZones-Requirements.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "FancyZones-Requirements.md"; sourceTree = "<group>"; };
+		5961FCA02ECA24C30033B4FF /* InternalRect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalRect.swift; sourceTree = "<group>"; };
+		5961FCA22ECA24D90033B4FF /* InternalPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalPoint.swift; sourceTree = "<group>"; };
 		599477562EAE68C4005BEB8C /* FracTile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FracTile.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		599477732EAE6B3F005BEB8C /* FracTileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FracTileTests.swift; sourceTree = "<group>"; };
 		599477DB2EB58A6A005BEB8C /* ZoneEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneEngine.swift; sourceTree = "<group>"; };
@@ -92,6 +96,8 @@
 		599477722EAE6B20005BEB8C /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				5961FCA22ECA24D90033B4FF /* InternalPoint.swift */,
+				5961FCA02ECA24C30033B4FF /* InternalRect.swift */,
 				5961FC9C2EC8D7130033B4FF /* DragSnapController.swift */,
 				599478052EB98B75005BEB8C /* EventMonitor.swift */,
 				599478062EB98B75005BEB8C /* SnapController.swift */,
@@ -209,6 +215,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				593A9CFE2EC3F38700C3CF08 /* Assets.xcassets in Sources */,
+				5961FCA12ECA24C90033B4FF /* InternalRect.swift in Sources */,
 				599477F72EB9612B005BEB8C /* LayoutModel.swift in Sources */,
 				599477F92EB96144005BEB8C /* DefaultLayouts.swift in Sources */,
 				5961FC9D2EC8D7130033B4FF /* DragSnapController.swift in Sources */,
@@ -216,6 +223,7 @@
 				599477E62EB58B6B005BEB8C /* EditorViewController.swift in Sources */,
 				599477DC2EB58A6F005BEB8C /* ZoneEngine.swift in Sources */,
 				599477EA2EB58B8E005BEB8C /* AccessibilityHelper.swift in Sources */,
+				5961FCA32ECA24E00033B4FF /* InternalPoint.swift in Sources */,
 				599477EC2EB6D8B8005BEB8C /* FractileApp.swift in Sources */,
 				599477EE2EB6DAE4005BEB8C /* OverlayController.swift in Sources */,
 				599477E82EB58B7E005BEB8C /* PreferencesWindowController.swift in Sources */,

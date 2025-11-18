@@ -8,6 +8,7 @@
 import Foundation
 import CoreGraphics
 import ApplicationServices
+import AppKit
 
 /// SnapController handles snapping focused windows into zones.
 /// Uses overlap >50% or nearest-center heuristic to choose the best zone.
@@ -17,10 +18,12 @@ public final class SnapController {
     private init() {}
     
     /// Snap the currently focused window to the best matching zone
-    /// - Parameter zones: Array of zone rectangles to snap to
+    /// - Parameters:
+    ///   - zones: Array of zone rectangles in internal (top-left) coordinates
+    ///   - screen: The screen containing these zones
     /// - Returns: true if successful, false if no window or permission denied
     @discardableResult
-    public func snapFocusedWindow(to zones: [CGRect]) -> Bool {
+    public func snapFocusedWindow(to zones: [InternalRect], screen: NSScreen) -> Bool {
         guard !zones.isEmpty else {
             return false
         }
@@ -33,37 +36,48 @@ public final class SnapController {
             return false
         }
         
-        guard let currentFrame = WindowControllerAX.getWindowFrame(focusedWindow) else {
+        guard let currentFrameBottomLeft = WindowControllerAX.getWindowFrame(focusedWindow) else {
             return false
         }
+        
+        // Convert window frame from bottom-left to internal coordinates
+        let currentFrame = InternalRect(fromBottomLeft: currentFrameBottomLeft, screen: screen)
         
         // Find the best zone for this window
         guard let bestZone = findBestZone(for: currentFrame, in: zones) else {
             return false
         }
         
+        // Convert best zone back to bottom-left coordinates for Accessibility API
+        let bestZoneBottomLeft = bestZone.cgRect(for: screen)
+        
         // Move the window to the best zone
-        return WindowControllerAX.setWindowFrame(focusedWindow, frame: bestZone)
+        return WindowControllerAX.setWindowFrame(focusedWindow, frame: bestZoneBottomLeft)
     }
     
     /// Find the best zone for a window using overlap >50% or nearest-center heuristic
     /// - Parameters:
-    ///   - windowFrame: The current window frame
-    ///   - zones: Array of available zones
+    ///   - windowFrame: The current window frame in internal coordinates
+    ///   - zones: Array of available zones in internal coordinates
     /// - Returns: The best matching zone, or nil if none found
-    private func findBestZone(for windowFrame: CGRect, in zones: [CGRect]) -> CGRect? {
+    private func findBestZone(for windowFrame: InternalRect, in zones: [InternalRect]) -> InternalRect? {
         guard !zones.isEmpty else {
             return nil
         }
         
         // First, try to find a zone with >50% overlap
-        var bestOverlapZone: CGRect?
+        var bestOverlapZone: InternalRect?
         var maxOverlapArea: CGFloat = 0
         
         for zone in zones {
-            let intersection = windowFrame.intersection(zone)
-            if !intersection.isNull {
-                let overlapArea = intersection.width * intersection.height
+            // Calculate intersection in internal coordinate space
+            let intersectionX = max(windowFrame.minX, zone.minX)
+            let intersectionY = max(windowFrame.minY, zone.minY)
+            let intersectionMaxX = min(windowFrame.maxX, zone.maxX)
+            let intersectionMaxY = min(windowFrame.maxY, zone.maxY)
+            
+            if intersectionX < intersectionMaxX && intersectionY < intersectionMaxY {
+                let overlapArea = (intersectionMaxX - intersectionX) * (intersectionMaxY - intersectionY)
                 let windowArea = windowFrame.width * windowFrame.height
                 let overlapRatio = overlapArea / windowArea
                 
@@ -79,23 +93,13 @@ public final class SnapController {
         }
         
         // If no zone has >50% overlap, find the zone with the nearest center
-        let windowCenter = CGPoint(
-            x: windowFrame.origin.x + windowFrame.width / 2,
-            y: windowFrame.origin.y + windowFrame.height / 2
-        )
+        let windowCenter = windowFrame.center
         
-        var nearestZone: CGRect?
+        var nearestZone: InternalRect?
         var minDistance: CGFloat = .infinity
         
         for zone in zones {
-            let zoneCenter = CGPoint(
-                x: zone.origin.x + zone.width / 2,
-                y: zone.origin.y + zone.height / 2
-            )
-            
-            let deltaX = windowCenter.x - zoneCenter.x
-            let deltaY = windowCenter.y - zoneCenter.y
-            let distance = sqrt(deltaX * deltaX + deltaY * deltaY)
+            let distance = windowCenter.distance(to: zone.center)
             
             if distance < minDistance {
                 minDistance = distance

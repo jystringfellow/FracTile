@@ -20,7 +20,8 @@ final class OverlayController: ObservableObject {
     @Published private(set) var isVisible = false
     
     /// Current zones being displayed by the overlay
-    @Published private(set) var currentZones: [CGRect] = []
+    @Published private(set) var currentZones: [InternalRect] = []
+    private(set) var currentScreen: NSScreen?
 
     private init() {}
 
@@ -31,6 +32,7 @@ final class OverlayController: ObservableObject {
 
     func showOverlay(on screen: NSScreen) {
         overlayWC.showOverlay(on: screen)
+        currentScreen = screen
         isVisible = true
     }
 
@@ -47,9 +49,10 @@ final class OverlayController: ObservableObject {
         }
     }
 
-    func updateZones(_ zones: [CGRect]) {
+    func updateZones(_ zones: [InternalRect], screen: NSScreen) {
         currentZones = zones
-        overlayWC.updateZones(zones)
+        currentScreen = screen
+        overlayWC.updateZones(zones, screen: screen)
     }
 
     /// Highlight specific zone indices on the overlay

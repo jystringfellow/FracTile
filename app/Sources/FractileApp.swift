@@ -174,8 +174,14 @@ struct FracTileApp: App {
             showNoZonesAlert()
             return
         }
+        
+        // Get the screen from the overlay controller
+        guard let screen = overlayController.currentScreen ?? NSScreen.main else {
+            showSnapFailedAlert()
+            return
+        }
  
-        let success = SnapController.shared.snapFocusedWindow(to: zones)
+        let success = SnapController.shared.snapFocusedWindow(to: zones, screen: screen)
  
         if !success {
             showSnapFailedAlert()
