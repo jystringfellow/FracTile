@@ -22,14 +22,12 @@ public final class LayoutManager {
 
     private init() {}
 
-    // Return an array of (displayID: Int, displayName: String, screen: NSScreen)
-    // displayID is the NSScreenNumber (CGDirectDisplayID) -> use deviceDescription
     public func availableDisplays() -> [(id: Int, name: String, screen: NSScreen)] {
         var results: [(Int, String, NSScreen)] = []
         for screen in NSScreen.screens {
             if let number = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber {
                 let displayID = number.intValue
-                let name = displayName(for: screen, id: displayID)
+                let name = displayName(for: screen)
                 results.append((displayID, name, screen))
             } else {
                 // fallback: use index-based id
@@ -40,11 +38,10 @@ public final class LayoutManager {
         return results
     }
 
-    private func displayName(for screen: NSScreen, id: Int) -> String {
-        // Try a friendly label including pixel size; this is not guaranteed unique but useful in UI
+    private func displayName(for screen: NSScreen) -> String {
         let size = screen.frame.size
-        let scale = screen.backingScaleFactor
-        return "Display \(id) — \(Int(size.width))×\(Int(size.height)) @\(scale)x"
+        let name = screen.localizedName
+        return "\(name) (\(Int(size.width))×\(Int(size.height)))"
     }
 
     // Persist selected ZoneSet id for a display
@@ -85,27 +82,29 @@ public final class LayoutManager {
         switch zoneSet.type {
         case .grid, .priorityGrid, .rows, .columns, .focus:
             guard let grid = zoneSet.gridInfo else { return }
-            let zones = ZoneEngine.calculateGridZones(workArea: workArea, gridInfo: grid, spacing: zoneSet.spacing)
-            // Convert engine Zone -> CGRect array expected by OverlayController
-            let rects = zones.map { $0.rect }
+            let zones = ZoneEngine.calculateGridZones(workArea: workArea, on: screen, gridInfo: grid, spacing: zoneSet.spacing)
+            // Extract InternalRect array from zones
+            let internalRects = zones.map { $0.rect }
             DispatchQueue.main.async {
-                OverlayController.shared.updateZones(rects)
+                OverlayController.shared.updateZones(internalRects, screen: screen)
                 OverlayController.shared.showOverlay()
             }
         case .canvas:
             // For canvas layouts scale saved canvas zones to current screen size
             if let canvas = zoneSet.canvasInfo {
-                let rects = canvas.zones.map { canvasZone -> CGRect in
-                    let scaleX = CGFloat(workArea.width) / CGFloat(max(1, canvas.lastWorkAreaWidth))
-                    let scaleY = CGFloat(workArea.height) / CGFloat(max(1, canvas.lastWorkAreaHeight))
-                    let zoneOriginX = workArea.origin.x + CGFloat(canvasZone.x) * scaleX
-                    let zoneOriginY = workArea.origin.y + CGFloat(canvasZone.y) * scaleY
+                // Convert bottom-left workArea to internal coordinates for canvas layout
+                let internalWorkArea = InternalRect(fromBottomLeft: workArea, screen: screen)
+                let internalRects = canvas.zones.map { canvasZone -> InternalRect in
+                    let scaleX = internalWorkArea.width / CGFloat(max(1, canvas.lastWorkAreaWidth))
+                    let scaleY = internalWorkArea.height / CGFloat(max(1, canvas.lastWorkAreaHeight))
+                    let zoneX = internalWorkArea.x + CGFloat(canvasZone.x) * scaleX
+                    let zoneY = internalWorkArea.y + CGFloat(canvasZone.y) * scaleY
                     let zoneWidth = CGFloat(canvasZone.width) * scaleX
                     let zoneHeight = CGFloat(canvasZone.height) * scaleY
-                    return CGRect(x: zoneOriginX, y: zoneOriginY, width: zoneWidth, height: zoneHeight)
+                    return InternalRect(x: zoneX, y: zoneY, width: zoneWidth, height: zoneHeight)
                 }
                 DispatchQueue.main.async {
-                    OverlayController.shared.updateZones(rects)
+                    OverlayController.shared.updateZones(internalRects, screen: screen)
                     OverlayController.shared.showOverlay()
                 }
             }

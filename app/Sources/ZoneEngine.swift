@@ -6,6 +6,7 @@
 
 import Foundation
 import CoreGraphics
+import AppKit
 
 // Constants matching the C++ implementation
 private let percentageMultiplier: Int = cMultiplier
@@ -13,9 +14,9 @@ private let percentageMultiplier: Int = cMultiplier
 // Simple Zone model (kept here since it's a runtime/engine concept)
 public struct Zone: Codable, Equatable {
     public let id: Int
-    public let rect: CGRect
+    public let rect: InternalRect
 
-    public init(id: Int, rect: CGRect) {
+    public init(id: Int, rect: InternalRect) {
         self.id = id
         self.rect = rect
     }
@@ -94,76 +95,56 @@ public final class ZoneEngine {
     }
 
     // Calculate grid zones from GridLayoutInfo and a workArea and spacing
-    // spacing is expected to be in the same coordinate system as workArea (points)
-    public static func calculateGridZones(workArea: CGRect, gridInfo: GridLayoutInfo, spacing: Int) -> [Zone] {
+    // workArea is expected to be in bottom-left origin (like NSScreen.visibleFrame)
+    // spacing is in points
+    public static func calculateGridZones(workArea: CGRect, on screen: NSScreen, gridInfo: GridLayoutInfo, spacing: Int) -> [Zone] {
+        // Convert workArea from bottom-left origin to internal top-left origin immediately
+        let internalWorkArea = InternalRect(fromBottomLeft: workArea, screen: screen)
+        
+        let rows = gridInfo.rows
+        let columns = gridInfo.columns
+        
+        // Compute dimension info for rows and columns
+        let rowTuples = computeDimensionInfo(count: rows, percents: gridInfo.rowsPercents, totalSize: Int(internalWorkArea.height))
+        let colTuples = computeDimensionInfo(count: columns, percents: gridInfo.columnsPercents, totalSize: Int(internalWorkArea.width))
+        
         var zones: [Zone] = []
-
-        guard gridInfo.rows > 0 && gridInfo.columns > 0 else {
-            return zones
-        }
-
-        let totalWidth = Int(workArea.width)
-        let totalHeight = Int(workArea.height)
-
-        // Compute row and column info using helper
-        let rowTuples = computeDimensionInfo(count: gridInfo.rows, percents: gridInfo.rowsPercents, totalSize: totalHeight)
-        let columnTuples = computeDimensionInfo(count: gridInfo.columns, percents: gridInfo.columnsPercents, totalSize: totalWidth)
-
-        for rowIndex in 0..<gridInfo.rows {
-            for colIndex in 0..<gridInfo.columns {
+        var zoneIdCounter = 0
+        
+        // Build zones by iterating through grid cells
+        for rowIndex in 0..<rows {
+            for colIndex in 0..<columns {
                 let zoneId = gridInfo.cellChildMap[rowIndex][colIndex]
-                let aboveDiffers = (rowIndex == 0) || (gridInfo.cellChildMap[rowIndex - 1][colIndex] != zoneId)
-                let leftDiffers = (colIndex == 0) || (gridInfo.cellChildMap[rowIndex][colIndex - 1] != zoneId)
-                if aboveDiffers && leftDiffers {
-                    let left = columnTuples[colIndex].start
+                
+                // Check if we've already created this zone
+                if zoneIdCounter <= zoneId {
+                    // Calculate zone rectangle in internal (top-left) coordinates
+                    let left = colTuples[colIndex].start
                     let top = rowTuples[rowIndex].start
-
-                    // find max row span
-                    var maxRow = rowIndex
-                    while (maxRow + 1) < gridInfo.rows && gridInfo.cellChildMap[maxRow + 1][colIndex] == zoneId {
-                        maxRow += 1
-                    }
-                    // find max col span
-                    var maxCol = colIndex
-                    while (maxCol + 1) < gridInfo.columns && gridInfo.cellChildMap[rowIndex][maxCol + 1] == zoneId {
-                        maxCol += 1
-                    }
-
-                    let right = columnTuples[maxCol].end
-                    let bottom = rowTuples[maxRow].end
-
-                    var topAdj = top
-                    var bottomAdj = bottom
-                    var leftAdj = left
-                    var rightAdj = right
-                    // spacing adjustments follow the C++ logic:
-                    topAdj += (rowIndex == 0) ? spacing : spacing / 2
-                    bottomAdj -= (maxRow == gridInfo.rows - 1) ? spacing : spacing / 2
-                    leftAdj += (colIndex == 0) ? spacing : spacing / 2
-                    rightAdj -= (maxCol == gridInfo.columns - 1) ? spacing : spacing / 2
-
-                    let rect = CGRect(
-                        x: CGFloat(leftAdj) + workArea.origin.x,
-                        y: CGFloat(topAdj) + workArea.origin.y,
-                        width: CGFloat(max(0, rightAdj - leftAdj)),
-                        height: CGFloat(max(0, bottomAdj - topAdj))
+                    let zoneWidth = colTuples[colIndex].extent
+                    let zoneHeight = rowTuples[rowIndex].extent
+                    
+                    // Apply spacing by shrinking the zone
+                    let halfSpacing = CGFloat(spacing) / 2.0
+                    let zoneFinalX = internalWorkArea.x + CGFloat(left) + halfSpacing
+                    let zoneFinalY = internalWorkArea.y + CGFloat(top) + halfSpacing
+                    let zoneFinalWidth = CGFloat(zoneWidth) - CGFloat(spacing)
+                    let zoneFinalHeight = CGFloat(zoneHeight) - CGFloat(spacing)
+                    
+                    // Create InternalRect for this zone
+                    let zoneRect = InternalRect(
+                        x: zoneFinalX,
+                        y: zoneFinalY,
+                        width: max(0, zoneFinalWidth),
+                        height: max(0, zoneFinalHeight)
                     )
-                    let zone = Zone(id: zoneId, rect: rect)
-                    if zone.isValid {
-                        // ensure unique id insertion (zones can be non-unique if layout is weird)
-                        if zones.contains(where: { $0.id == zone.id }) {
-                            // this corresponds to AddZone failing in the C++ code
-                            // return empty to indicate failure (mirror C++ behavior)
-                            return []
-                        }
-                        zones.append(zone)
-                    } else {
-                        return []
-                    }
+                    
+                    zones.append(Zone(id: zoneId, rect: zoneRect))
+                    zoneIdCounter = zoneId + 1
                 }
             }
         }
-
+        
         return zones
     }
 }

@@ -47,18 +47,37 @@ final class OverlayWindowController: NSWindowController {
         }
     }
 
+    // Show overlay on a specific screen
+    func showOverlay(on screen: NSScreen) {
+        guard let window = window else { return }
+        if window.isVisible {
+            window.orderOut(nil)
+        }
+        window.setFrame(screen.frame, display: true)
+        window.makeKeyAndOrderFront(nil)
+    }
+
     func hideOverlay() {
         window?.orderOut(nil)
     }
 
-    func updateZones(_ zones: [CGRect]) {
+    func updateZones(_ zones: [InternalRect], screen: NSScreen) {
         contentView?.zones = zones
+        contentView?.screen = screen
+        contentView?.needsDisplay = true
+    }
+
+    // Highlight specific zone indices (useful while dragging)
+    func highlightZones(_ indices: [Int]) {
+        contentView?.highlightedIndices = Set(indices)
         contentView?.needsDisplay = true
     }
 }
 
 final class OverlayContentView: NSView {
-    var zones: [CGRect] = []
+    var zones: [InternalRect] = []
+    var screen: NSScreen?
+    var highlightedIndices: Set<Int> = []
 
     override func draw(_ dirtyRect: NSRect) {
         super.draw(dirtyRect)
@@ -98,21 +117,32 @@ final class OverlayContentView: NSView {
     }
 
     private func drawZones(in rect: NSRect) {
-        for zone in zones {
-            let localRect = convertFromScreenRect(zone)
+        guard let screen = screen else { return }
+        for (index, zone) in zones.enumerated() {
+            // InternalRect uses top-left origin; NSView uses bottom-left.
+            // Convert to Cocoa global bottom-left with cgRect(for:), then to local by offsetting by screen origin.
+            let globalBL = zone.cgRect(for: screen)
+            let localRect = NSRect(
+                x: globalBL.origin.x - screen.frame.origin.x,
+                y: globalBL.origin.y - screen.frame.origin.y,
+                width: globalBL.width,
+                height: globalBL.height
+            )
             let rounded = NSBezierPath(roundedRect: localRect, xRadius: 6, yRadius: 6)
-            NSColor.systemBlue.withAlphaComponent(0.18).setFill()
-            rounded.fill()
-            NSColor.systemBlue.withAlphaComponent(0.9).setStroke()
-            rounded.lineWidth = 2.0
-            rounded.stroke()
-        }
-    }
 
-    private func convertFromScreenRect(_ screenRect: CGRect) -> CGRect {
-        let windowOrigin = window?.frame.origin ?? .zero
-        let localX = screenRect.origin.x - windowOrigin.x
-        let localY = screenRect.origin.y - windowOrigin.y
-        return CGRect(x: localX, y: localY, width: screenRect.width, height: screenRect.height)
+            if highlightedIndices.contains(index) {
+                NSColor.systemBlue.withAlphaComponent(0.3).setFill()
+                rounded.fill()
+                NSColor.systemBlue.withAlphaComponent(1.0).setStroke()
+                rounded.lineWidth = 3.0
+                rounded.stroke()
+            } else {
+                NSColor.systemBlue.withAlphaComponent(0.18).setFill()
+                rounded.fill()
+                NSColor.systemBlue.withAlphaComponent(0.9).setStroke()
+                rounded.lineWidth = 2.0
+                rounded.stroke()
+            }
+        }
     }
 }
