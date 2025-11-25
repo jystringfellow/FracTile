@@ -117,10 +117,17 @@ final class OverlayContentView: NSView {
     }
 
     private func drawZones(in rect: NSRect) {
+        guard let screen = screen else { return }
         for (index, zone) in zones.enumerated() {
-            // InternalRect uses top-left origin, same as NSView
-            // So we can use .cgRect directly for drawing
-            let localRect = zone.cgRect
+            // InternalRect uses top-left origin; NSView uses bottom-left.
+            // Convert to Cocoa global bottom-left with cgRect(for:), then to local by offsetting by screen origin.
+            let globalBL = zone.cgRect(for: screen)
+            let localRect = NSRect(
+                x: globalBL.origin.x - screen.frame.origin.x,
+                y: globalBL.origin.y - screen.frame.origin.y,
+                width: globalBL.width,
+                height: globalBL.height
+            )
             let rounded = NSBezierPath(roundedRect: localRect, xRadius: 6, yRadius: 6)
 
             if highlightedIndices.contains(index) {

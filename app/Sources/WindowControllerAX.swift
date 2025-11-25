@@ -13,6 +13,7 @@ import ApplicationServices
 /// - Check if Accessibility permission is granted
 /// - Get the currently focused window
 /// - Read and set window position and size
+/// Note: AX window positions/sizes are in global top-left origin coordinates relative to the primary display.
 public final class WindowControllerAX {
     
     /// Check if the app has Accessibility permission
@@ -51,7 +52,7 @@ public final class WindowControllerAX {
         return nil
     }
     
-    /// Get the frame (position and size) of a window
+    /// Get the frame (position and size) of a window in global top-left origin coordinates
     /// Returns nil if the window doesn't have position/size attributes
     public static func getWindowFrame(_ window: AXUIElement) -> CGRect? {
         var positionValue: CFTypeRef?
@@ -75,7 +76,7 @@ public final class WindowControllerAX {
         return CGRect(origin: position, size: size)
     }
     
-    /// Set the frame (position and size) of a window
+    /// Set the frame (position and size) of a window using global top-left origin coordinates
     /// Returns true if successful, false otherwise
     @discardableResult
     public static func setWindowFrame(_ window: AXUIElement, frame: CGRect) -> Bool {
@@ -96,7 +97,7 @@ public final class WindowControllerAX {
         return posResult == .success && sizeResult == .success
     }
     
-    /// Get the AXUIElement for the window under a screen point (global coordinates)
+    /// Get the AXUIElement for the window under a screen point (global coordinates, top-left origin)
     public static func getWindowUnderPoint(_ point: CGPoint) -> AXUIElement? {
         guard hasAccessibilityPermission() else { return nil }
 

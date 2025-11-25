@@ -106,17 +106,24 @@ final class DragSnapController {
             let finalIndices = highlightedZoneIndices.sorted()
             
             // Find the window to snap
-            let releasePoint = NSEvent.mouseLocation
+            let releasePointBL = NSEvent.mouseLocation
             var targetWindow: AXUIElement? = WindowControllerAX.getFocusedWindow()
             if targetWindow == nil {
-                targetWindow = WindowControllerAX.getWindowUnderPoint(releasePoint)
+                if let screen = overlayScreen {
+                    // Convert release point to AX global top-left coordinates
+                    let internalPoint = InternalPoint(fromBottomLeft: releasePointBL, screen: screen)
+                    let axPoint = internalPoint.accessibilityPoint(for: screen)
+                    targetWindow = WindowControllerAX.getWindowUnderPoint(axPoint)
+                } else {
+                    targetWindow = WindowControllerAX.getWindowUnderPoint(releasePointBL)
+                }
             }
 
             if let windowElement = targetWindow, !finalIndices.isEmpty, let screen = overlayScreen {
-                // Convert InternalRect to bottom-left CGRect for Accessibility API
+                // Convert InternalRect to global top-left CGRect for Accessibility API
                 let targetInternalRect = activeZones[finalIndices[0]]
-                let targetRect = targetInternalRect.cgRect(for: screen)
-                _ = WindowControllerAX.setWindowFrame(windowElement, frame: targetRect)
+                let targetAXRect = targetInternalRect.accessibilityFrame(for: screen)
+                _ = WindowControllerAX.setWindowFrame(windowElement, frame: targetAXRect)
             }
         }
         

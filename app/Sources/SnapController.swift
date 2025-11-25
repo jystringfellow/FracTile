@@ -36,23 +36,23 @@ public final class SnapController {
             return false
         }
         
-        guard let currentFrameBottomLeft = WindowControllerAX.getWindowFrame(focusedWindow) else {
+        guard let currentFrameAXTopLeft = WindowControllerAX.getWindowFrame(focusedWindow) else {
             return false
         }
         
-        // Convert window frame from bottom-left to internal coordinates
-        let currentFrame = InternalRect(fromBottomLeft: currentFrameBottomLeft, screen: screen)
+        // Convert window frame from AX global top-left to internal coordinates
+        let currentFrame = InternalRect(fromAccessibility: currentFrameAXTopLeft, screen: screen)
         
         // Find the best zone for this window
         guard let bestZone = findBestZone(for: currentFrame, in: zones) else {
             return false
         }
         
-        // Convert best zone back to bottom-left coordinates for Accessibility API
-        let bestZoneBottomLeft = bestZone.cgRect(for: screen)
+        // Convert best zone to AX global top-left coordinates for Accessibility API
+        let bestZoneAXFrame = bestZone.accessibilityFrame(for: screen)
         
         // Move the window to the best zone
-        return WindowControllerAX.setWindowFrame(focusedWindow, frame: bestZoneBottomLeft)
+        return WindowControllerAX.setWindowFrame(focusedWindow, frame: bestZoneAXFrame)
     }
     
     /// Find the best zone for a window using overlap >50% or nearest-center heuristic
