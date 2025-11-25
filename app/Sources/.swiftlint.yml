@@ -1,7 +1,0 @@
-identifier_name:
-  excluded:
-    - x
-    - y
-    - id
-
-reporter: "xcode"
