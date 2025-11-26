@@ -17,6 +17,7 @@ public final class LayoutManager {
     public static let shared = LayoutManager()
 
     private let userDefaults = UserDefaults.standard
+    
     // Key prefix; full key will be "FracTile.SelectedLayout.<displayID>"
     private let defaultsPrefix = "FracTile.SelectedLayout"
 

@@ -50,7 +50,6 @@
 		599477EF2EB6DC84005BEB8C /* EditorWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorWindowController.swift; sourceTree = "<group>"; };
 		599477F12EB6DD2C005BEB8C /* PreferencesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
 		599477F32EB91F91005BEB8C /* FracTile-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "FracTile-Info.plist"; sourceTree = "<group>"; };
-		599477F52EB95F1F005BEB8C /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		599477F62EB9611E005BEB8C /* LayoutModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutModel.swift; sourceTree = "<group>"; };
 		599477F82EB9613C005BEB8C /* DefaultLayouts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLayouts.swift; sourceTree = "<group>"; };
 		599477FA2EB96588005BEB8C /* LayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutManager.swift; sourceTree = "<group>"; };
@@ -76,7 +75,6 @@
 			isa = PBXGroup;
 			children = (
 				59B0FE052EBD7607004A5696 /* Resources */,
-				599477F52EB95F1F005BEB8C /* .swiftlint.yml */,
 				599477F32EB91F91005BEB8C /* FracTile-Info.plist */,
 				599477742EAE6B3F005BEB8C /* Tests */,
 				599477722EAE6B20005BEB8C /* Sources */,

@@ -150,15 +150,25 @@ struct FracTileApp: App {
         }
         if let display = found {
             activeDisplayID = display.id
-            if let persisted = LayoutManager.shared.selectedLayoutId(forDisplayID: display.id) {
-                activeLayoutId = persisted
-            } else {
+            
+            var targetLayoutId: String?
+
+            // Check if we have a persisted layout AND if it still exists in our list
+            if let persisted = LayoutManager.shared.selectedLayoutId(forDisplayID: display.id),
+               DefaultLayouts.all.contains(where: { $0.id == persisted }) {
+                targetLayoutId = persisted
+            }
+
+            // If no valid persisted layout, pick a default
+            if targetLayoutId == nil {
                 // Default to 2x2 and persist for this display
                 if let defaultId = DefaultLayouts.zoneSet(named: "Grid 2×2")?.id ?? DefaultLayouts.all.first?.id {
-                    activeLayoutId = defaultId
+                    targetLayoutId = defaultId
                     LayoutManager.shared.setSelectedLayout(defaultId, forDisplayID: display.id)
                 }
             }
+            
+            activeLayoutId = targetLayoutId
 
             // load persisted keys as well (keep state in sync if changed externally)
             snapKey = UserDefaults.standard.string(forKey: "FracTile.SnapKey") ?? snapKey
@@ -266,8 +276,10 @@ struct MenuBarContent: View {
                             Picker(selection: Binding(get: {
                                 return activeLayoutId ?? ""
                             }, set: { newVal in
-                                activeLayoutId = newVal.isEmpty ? nil : newVal
-                                if let layout = activeLayoutId, let disp = activeDisplayID {
+                                let newLayoutId = newVal.isEmpty ? nil : newVal
+                                activeLayoutId = newLayoutId
+                                
+                                if let layout = newLayoutId, let disp = activeDisplayID {
                                     LayoutManager.shared.setSelectedLayout(layout, forDisplayID: disp)
                                 }
                             }), label: Text("Layout")) {
