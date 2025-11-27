@@ -20,8 +20,44 @@ public final class LayoutManager {
     
     // Key prefix; full key will be "FracTile.SelectedLayout.<displayID>"
     private let defaultsPrefix = "FracTile.SelectedLayout"
+    private let layoutsKey = "FracTile.SavedLayouts"
+
+    private var _layouts: [ZoneSet] = []
 
     private init() {}
+
+    public var layouts: [ZoneSet] {
+        if _layouts.isEmpty {
+            _layouts = loadSavedLayouts()
+        }
+        return _layouts
+    }
+
+    public func saveLayout(_ layout: ZoneSet) {
+        // Ensure loaded
+        if _layouts.isEmpty { _layouts = loadSavedLayouts() }
+
+        if let index = _layouts.firstIndex(where: { $0.id == layout.id }) {
+            _layouts[index] = layout
+        } else {
+            _layouts.append(layout)
+        }
+        persistLayouts()
+    }
+
+    private func loadSavedLayouts() -> [ZoneSet] {
+        if let data = userDefaults.data(forKey: layoutsKey),
+           let decoded = try? JSONDecoder().decode([ZoneSet].self, from: data) {
+            return decoded
+        }
+        return []
+    }
+
+    private func persistLayouts() {
+        if let encoded = try? JSONEncoder().encode(_layouts) {
+            userDefaults.set(encoded, forKey: layoutsKey)
+        }
+    }
 
     public func availableDisplays() -> [(id: Int, name: String, screen: NSScreen)] {
         var results: [(Int, String, NSScreen)] = []
@@ -63,12 +99,13 @@ public final class LayoutManager {
     // Convenience: return the ZoneSet (from DefaultLayouts or saved custom sets) for a display
     // For now, we only ship DefaultLayouts; later extend to user-saved layouts
     public func selectedZoneSet(forDisplayID displayID: Int) -> ZoneSet {
+        let currentLayouts = self.layouts
         if let layoutId = selectedLayoutId(forDisplayID: displayID),
-           let zoneSet = DefaultLayouts.all.first(where: { $0.id == layoutId || $0.name == layoutId }) {
+           let zoneSet = currentLayouts.first(where: { $0.id == layoutId }) {
             return zoneSet
         }
         // fallback default: 2x2
-        return DefaultLayouts.zoneSet(named: "Grid 2×2") ?? DefaultLayouts.all.first!
+        return currentLayouts.first(where: { $0.name == "Grid 2×2" }) ?? currentLayouts.first ?? DefaultLayouts.all.first!
     }
 
     private func userDefaultsKey(for displayID: Int) -> String {

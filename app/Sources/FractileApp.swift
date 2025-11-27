@@ -20,6 +20,7 @@ struct FracTileApp: App {
     @State private var displays: [(id: Int, name: String, screen: NSScreen)] = []
     @State private var activeDisplayID: Int? = nil
     @State private var activeLayoutId: String? = nil
+    @State private var layouts: [ZoneSet] = []
 
     // Snap / multi-zone key choices (persisted)
     @State private var snapKey: String = UserDefaults.standard.string(forKey: "FracTile.SnapKey") ?? "Shift"
@@ -41,7 +42,7 @@ struct FracTileApp: App {
     /// Run lightweight startup tasks in order: avoid duplicates, load defaults, then check accessibility.
     private func startupSequence() {
         checkIfRunning()
-        loadLayouts()
+        // Layouts will be loaded on demand or when menu opens
         checkAccessibilityOnStartup()
     }
 
@@ -77,6 +78,24 @@ struct FracTileApp: App {
 
     /// Load  layouts (lightweight) so the app has defaults ready. We don't show overlays here.
     private func loadLayouts() {
+        // Seed-and-load logic
+        var currentLayouts = LayoutManager.shared.layouts
+        
+        let hasSeeded = UserDefaults.standard.bool(forKey: "FracTile.HasSeededDefaults")
+        
+        if !hasSeeded {
+            if currentLayouts.isEmpty {
+                // Seed defaults
+                currentLayouts = DefaultLayouts.all
+                for layout in currentLayouts {
+                    LayoutManager.shared.saveLayout(layout)
+                }
+            }
+            UserDefaults.standard.set(true, forKey: "FracTile.HasSeededDefaults")
+        }
+        
+        self.layouts = currentLayouts
+
         let displays = LayoutManager.shared.availableDisplays()
         for display in displays {
             _ = LayoutManager.shared.selectedZoneSet(forDisplayID: display.id)
@@ -89,6 +108,7 @@ struct FracTileApp: App {
                 displays: $displays,
                 activeDisplayID: $activeDisplayID,
                 activeLayoutId: $activeLayoutId,
+                layouts: layouts,
                 snapKey: $snapKey,
                 multiZoneKey: $multiZoneKey,
                 modifierChoices: modifierChoices,
@@ -135,6 +155,11 @@ struct FracTileApp: App {
 
     // Helper: determine which display the user most likely wants to configure (screen under mouse, or main)
     private func refreshDisplaysAndSelection() {
+        // Ensure layouts are loaded
+        if layouts.isEmpty {
+            loadLayouts()
+        }
+
         displays = LayoutManager.shared.availableDisplays()
         // find screen under mouse
         let mouseLoc = NSEvent.mouseLocation
@@ -155,16 +180,16 @@ struct FracTileApp: App {
 
             // Check if we have a persisted layout AND if it still exists in our list
             if let persisted = LayoutManager.shared.selectedLayoutId(forDisplayID: display.id),
-               DefaultLayouts.all.contains(where: { $0.id == persisted }) {
+               layouts.contains(where: { $0.id == persisted }) {
                 targetLayoutId = persisted
             }
 
             // If no valid persisted layout, pick a default
             if targetLayoutId == nil {
                 // Default to 2x2 and persist for this display
-                if let defaultId = DefaultLayouts.zoneSet(named: "Grid 2×2")?.id ?? DefaultLayouts.all.first?.id {
-                    targetLayoutId = defaultId
-                    LayoutManager.shared.setSelectedLayout(defaultId, forDisplayID: display.id)
+                if let defaultLayout = layouts.first(where: { $0.name == "Grid 2×2" }) ?? layouts.first {
+                    targetLayoutId = defaultLayout.id
+                    LayoutManager.shared.setSelectedLayout(defaultLayout.id, forDisplayID: display.id)
                 }
             }
             
@@ -241,6 +266,7 @@ struct MenuBarContent: View {
     @Binding var displays: [(id: Int, name: String, screen: NSScreen)]
     @Binding var activeDisplayID: Int?
     @Binding var activeLayoutId: String?
+    var layouts: [ZoneSet]
     @Binding var snapKey: String
     @Binding var multiZoneKey: String
     let modifierChoices: [String]
@@ -283,7 +309,7 @@ struct MenuBarContent: View {
                                     LayoutManager.shared.setSelectedLayout(layout, forDisplayID: disp)
                                 }
                             }), label: Text("Layout")) {
-                                ForEach(DefaultLayouts.all, id: \.id) { zoneSet in
+                                ForEach(layouts, id: \.id) { zoneSet in
                                     Text(zoneSet.name).tag(zoneSet.id)
                                 }
                             }
@@ -390,6 +416,7 @@ struct MenuBarContent: View {
         displays: .constant([]),
         activeDisplayID: .constant(nil),
         activeLayoutId: .constant(nil),
+        layouts: [],
         snapKey: .constant("Shift"),
         multiZoneKey: .constant("Command"),
         modifierChoices: ["Command", "Shift", "Option", "Control"],
