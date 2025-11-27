@@ -64,10 +64,11 @@ public struct DefaultLayouts {
         let rows2 = ZoneSet(name: "Rows (2)", gridInfo: makeGridInfo(rows: 2, columns: 1), spacing: 12)
         sets.append(rows2)
 
+        // TODO: Allow for not grid based canvas layouts with an example here.
         // Focus layout (mimic LayoutConfigurator::Focus — we approximate with a single large center zone and stacked smaller ones)
         // For simplicity here create a 1x1 "focus" grid -- editor will later create better Focus layouts
-        let focus = ZoneSet(name: "Focus (stack)", gridInfo: makeGridInfo(rows: 1, columns: 1), spacing: 12)
-        sets.append(focus)
+        //let focus = ZoneSet(name: "Focus (stack)", gridInfo: makeGridInfo(rows: 1, columns: 1), spacing: 12)
+        //sets.append(focus)
 
         // Priority grids and some common asymmetric grids:
         // PriorityGrid (2..5) are often predefined; we add a couple of useful variants:
