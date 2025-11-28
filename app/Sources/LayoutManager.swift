@@ -43,6 +43,38 @@ public final class LayoutManager {
             _layouts.append(layout)
         }
         persistLayouts()
+        NotificationCenter.default.post(name: .layoutListDidChange, object: nil)
+    }
+
+    public func deleteLayout(withId id: String) {
+        // Ensure loaded
+        if _layouts.isEmpty { _layouts = loadSavedLayouts() }
+        
+        if let index = _layouts.firstIndex(where: { $0.id == id }) {
+            _layouts.remove(at: index)
+            persistLayouts()
+            NotificationCenter.default.post(name: .layoutListDidChange, object: nil)
+        }
+    }
+
+    public func duplicateLayout(withId id: String) {
+        // Ensure loaded
+        if _layouts.isEmpty { _layouts = loadSavedLayouts() }
+
+        if let layout = _layouts.first(where: { $0.id == id }) {
+            var newLayout = layout
+            newLayout.id = UUID().uuidString
+            newLayout.name = "\(layout.name) (Copy)"
+            _layouts.append(newLayout)
+            persistLayouts()
+            NotificationCenter.default.post(name: .layoutListDidChange, object: nil)
+        }
+    }
+
+    public func resetToDefaults() {
+        _layouts = DefaultLayouts.all
+        persistLayouts()
+        NotificationCenter.default.post(name: .layoutListDidChange, object: nil)
     }
 
     private func loadSavedLayouts() -> [ZoneSet] {
@@ -130,17 +162,8 @@ public final class LayoutManager {
         case .canvas:
             // For canvas layouts scale saved canvas zones to current screen size
             if let canvas = zoneSet.canvasInfo {
-                // Convert bottom-left workArea to internal coordinates for canvas layout
-                let internalWorkArea = InternalRect(fromBottomLeft: workArea, screen: screen)
-                let internalRects = canvas.zones.map { canvasZone -> InternalRect in
-                    let scaleX = internalWorkArea.width / CGFloat(max(1, canvas.lastWorkAreaWidth))
-                    let scaleY = internalWorkArea.height / CGFloat(max(1, canvas.lastWorkAreaHeight))
-                    let zoneX = internalWorkArea.x + CGFloat(canvasZone.x) * scaleX
-                    let zoneY = internalWorkArea.y + CGFloat(canvasZone.y) * scaleY
-                    let zoneWidth = CGFloat(canvasZone.width) * scaleX
-                    let zoneHeight = CGFloat(canvasZone.height) * scaleY
-                    return InternalRect(x: zoneX, y: zoneY, width: zoneWidth, height: zoneHeight)
-                }
+                let zones = ZoneEngine.calculateCanvasZones(workArea: workArea, on: screen, canvasInfo: canvas, spacing: zoneSet.spacing)
+                let internalRects = zones.map { $0.rect }
                 DispatchQueue.main.async {
                     OverlayController.shared.updateZones(internalRects, screen: screen)
                     OverlayController.shared.showOverlay()
@@ -153,4 +176,5 @@ public final class LayoutManager {
 // Notification name when a selection changes (so UI or runtime can react)
 extension Notification.Name {
     static let selectedLayoutDidChange = Notification.Name("FracTile.SelectedLayoutDidChange")
+    static let layoutListDidChange = Notification.Name("FracTile.LayoutListDidChange")
 }

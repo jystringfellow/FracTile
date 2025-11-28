@@ -113,32 +113,30 @@ struct FracTileApp: App {
                 multiZoneKey: $multiZoneKey,
                 modifierChoices: modifierChoices,
                 onEdit: {
-                    // Edit placeholder
-                    let alert = NSAlert()
-                    alert.messageText = "Edit Layout"
-                    alert.informativeText = "Editing layouts is not implemented yet."
-                    alert.addButton(withTitle: "OK")
-                    alert.runModal()
+                    if let layoutId = activeLayoutId, let layout = layouts.first(where: { $0.id == layoutId }) {
+                        LayoutWindowManager.shared.showEditLayout(layout)
+                    }
                 },
                 onAdd: {
-                    // Add placeholder
-                    let alert = NSAlert()
-                    alert.messageText = "Add Layout"
-                    alert.informativeText = "Adding layouts is not implemented yet."
-                    alert.addButton(withTitle: "OK")
-                    alert.runModal()
+                    LayoutWindowManager.shared.showAddLayout()
                 },
                 onImport: {
                     // Import will open the editor where the import UI lives
                     EditorWindowController.shared.showEditor()
                 },
                 onDelete: {
-                    // Delete placeholder
-                    let alert = NSAlert()
-                    alert.messageText = "Delete Layout"
-                    alert.informativeText = "Deleting layouts is not implemented yet."
-                    alert.addButton(withTitle: "OK")
-                    alert.runModal()
+                    if let layoutId = activeLayoutId {
+                        let alert = NSAlert()
+                        alert.messageText = "Delete Layout?"
+                        alert.informativeText = "Are you sure you want to delete this layout? This cannot be undone."
+                        alert.addButton(withTitle: "Delete")
+                        alert.addButton(withTitle: "Cancel")
+                        
+                        let response = alert.runModal()
+                        if response == .alertFirstButtonReturn {
+                            LayoutManager.shared.deleteLayout(withId: layoutId)
+                        }
+                    }
                 },
                 onQuit: {
                     NSApp.terminate(nil)
@@ -149,6 +147,19 @@ struct FracTileApp: App {
             )
             .frame(width: 360)
             .padding()
+            .onReceive(NotificationCenter.default.publisher(for: .layoutListDidChange)) { _ in
+                loadLayouts()
+                // Check if active layout still exists
+                if let active = activeLayoutId, !layouts.contains(where: { $0.id == active }) {
+                     // Select default
+                     if let defaultLayout = layouts.first(where: { $0.name == "Grid 2×2" }) ?? layouts.first {
+                         activeLayoutId = defaultLayout.id
+                         if let displayID = activeDisplayID {
+                             LayoutManager.shared.setSelectedLayout(defaultLayout.id, forDisplayID: displayID)
+                         }
+                     }
+                }
+            }
         }
         .menuBarExtraStyle(.window)
     }

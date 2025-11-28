@@ -147,4 +147,30 @@ public final class ZoneEngine {
         
         return zones
     }
+
+    // Calculate canvas zones from CanvasLayoutInfo
+    public static func calculateCanvasZones(workArea: CGRect, on screen: NSScreen, canvasInfo: CanvasLayoutInfo, spacing: Int) -> [Zone] {
+        let workAreaWidth = workArea.width
+        let workAreaHeight = workArea.height
+        
+        let scaleX = workAreaWidth / CGFloat(canvasInfo.lastWorkAreaWidth)
+        let scaleY = workAreaHeight / CGFloat(canvasInfo.lastWorkAreaHeight)
+        
+        // Convert workArea to InternalRect to get its top-left relative to screen
+        let workAreaInternal = InternalRect(fromBottomLeft: workArea, screen: screen)
+        
+        var zones: [Zone] = []
+        
+        for canvasZone in canvasInfo.zones {
+            let x = workAreaInternal.x + CGFloat(canvasZone.x) * scaleX
+            let y = workAreaInternal.y + CGFloat(canvasZone.y) * scaleY
+            let w = CGFloat(canvasZone.width) * scaleX
+            let h = CGFloat(canvasZone.height) * scaleY
+            
+            let rect = InternalRect(x: x, y: y, width: w, height: h)
+            zones.append(Zone(id: canvasZone.id, rect: rect))
+        }
+        
+        return zones
+    }
 }

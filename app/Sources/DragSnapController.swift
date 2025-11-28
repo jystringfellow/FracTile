@@ -172,9 +172,13 @@ final class DragSnapController {
                 
                 if let displayId = LayoutManager.shared.availableDisplays().first(where: { $0.screen == screenForPoint })?.id {
                     let zoneSet = LayoutManager.shared.selectedZoneSet(forDisplayID: displayId)
+                    let workArea = screenForPoint.visibleFrame
+                    
                     if let gridInfo = zoneSet.gridInfo {
-                        let workArea = screenForPoint.visibleFrame
                         let computedZones = ZoneEngine.calculateGridZones(workArea: workArea, on: screenForPoint, gridInfo: gridInfo, spacing: zoneSet.spacing)
+                        activeZones = computedZones.map { $0.rect }
+                    } else if let canvasInfo = zoneSet.canvasInfo {
+                        let computedZones = ZoneEngine.calculateCanvasZones(workArea: workArea, on: screenForPoint, canvasInfo: canvasInfo, spacing: zoneSet.spacing)
                         activeZones = computedZones.map { $0.rect }
                     }
                 }
