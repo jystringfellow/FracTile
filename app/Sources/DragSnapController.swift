@@ -80,8 +80,7 @@ final class DragSnapController {
         }
 
         // Respect multi-zone modifier
-        let multiZoneFlags = flagsForPersistedKey(UserDefaults.standard.string(forKey: "FracTile.MultiZoneKey") ?? "Command")
-        let multiZoneActive = NSEvent.modifierFlags.intersection(.deviceIndependentFlagsMask).contains(multiZoneFlags)
+        let multiZoneActive = isMultiZoneKeyHeld()
         
         var newHighlightedIndices: Set<Int>
         
@@ -90,16 +89,7 @@ final class DragSnapController {
             let accumulatedIndices = highlightedZoneIndices.union(zonesUnderCursor)
             
             // Calculate bounding box of all accumulated zones to fill in the gaps
-            var unionRect: CGRect?
-            for index in accumulatedIndices {
-                let zone = activeZones[index]
-                let rect = CGRect(x: zone.x, y: zone.y, width: zone.width, height: zone.height)
-                if unionRect == nil {
-                    unionRect = rect
-                } else {
-                    unionRect = unionRect?.union(rect)
-                }
-            }
+            let unionRect = computeUnionRect(forIndices: accumulatedIndices)
             
             if let bounds = unionRect {
                 // Highlight all zones that intersect with the bounding box (snap area)
@@ -124,13 +114,7 @@ final class DragSnapController {
             }
         }
 
-        if newHighlightedIndices != highlightedZoneIndices {
-            highlightedZoneIndices = newHighlightedIndices
-            let sortedIndices = highlightedZoneIndices.sorted()
-            DispatchQueue.main.async {
-                OverlayController.shared.highlightZones(sortedIndices)
-            }
-        }
+        updateHighlightedZones(newHighlightedIndices)
     }
 
     private func handleMouseUp(_ event: NSEvent) {
@@ -140,9 +124,6 @@ final class DragSnapController {
         let shouldSnap = isSnapKeyHeld() && !highlightedZoneIndices.isEmpty
         
         if shouldSnap {
-            // Determine final zones
-            let finalIndices = highlightedZoneIndices.sorted()
-            
             // Find the window to snap
             let releasePointBL = NSEvent.mouseLocation
             var targetWindow: AXUIElement? = WindowControllerAX.getFocusedWindow()
@@ -157,22 +138,11 @@ final class DragSnapController {
                 }
             }
 
-            if let windowElement = targetWindow, !finalIndices.isEmpty, let screen = overlayScreen {
+            if let windowElement = targetWindow, !highlightedZoneIndices.isEmpty, let screen = overlayScreen {
                 // Calculate union of all selected zones
-                var unionRect: CGRect?
-                
-                for index in finalIndices {
-                    let zoneRect = activeZones[index]
-                    let axRect = zoneRect.accessibilityFrame(for: screen)
-                    
-                    if unionRect == nil {
-                        unionRect = axRect
-                    } else {
-                        unionRect = unionRect?.union(axRect)
-                    }
-                }
-                
-                if let finalRect = unionRect {
+                if let unionRect = computeUnionRect(forIndices: highlightedZoneIndices) {
+                    let internalZone = InternalRect(x: unionRect.origin.x, y: unionRect.origin.y, width: unionRect.width, height: unionRect.height)
+                    let finalRect = internalZone.accessibilityFrame(for: screen)
                     _ = WindowControllerAX.setWindowFrame(windowElement, frame: finalRect)
                 }
             }
@@ -194,10 +164,7 @@ final class DragSnapController {
         guard isDragging else { return }
         
         // Check if multi-zone key is released to reset selection
-        let multiZoneFlags = flagsForPersistedKey(UserDefaults.standard.string(forKey: "FracTile.MultiZoneKey") ?? "Command")
-        let currentFlags = NSEvent.modifierFlags.intersection(.deviceIndependentFlagsMask)
-        
-        if !currentFlags.contains(multiZoneFlags) {
+        if !isMultiZoneKeyHeld() {
             // Reset to just the zone under the cursor
             if let screen = overlayScreen {
                 let mouseLocationBottomLeft = NSEvent.mouseLocation
@@ -210,15 +177,9 @@ final class DragSnapController {
                     }
                 }
                 
-                let newIndices: Set<Int> = zonesUnderCursor.isEmpty ? [] : [zonesUnderCursor.first!]
+                let newIndices = Set(zonesUnderCursor.prefix(1))
                 
-                if newIndices != highlightedZoneIndices {
-                    highlightedZoneIndices = newIndices
-                    let sortedIndices = highlightedZoneIndices.sorted()
-                    DispatchQueue.main.async {
-                        OverlayController.shared.highlightZones(sortedIndices)
-                    }
-                }
+                updateHighlightedZones(newIndices)
             }
         }
         
@@ -260,10 +221,26 @@ final class DragSnapController {
         }
     }
     
+    private func updateHighlightedZones(_ newIndices: Set<Int>) {
+        if newIndices != highlightedZoneIndices {
+            highlightedZoneIndices = newIndices
+            let sortedIndices = highlightedZoneIndices.sorted()
+            DispatchQueue.main.async {
+                OverlayController.shared.highlightZones(sortedIndices)
+            }
+        }
+    }
+
     private func isSnapKeyHeld() -> Bool {
         let requiredFlags = flagsForPersistedKey(UserDefaults.standard.string(forKey: "FracTile.SnapKey") ?? "Shift")
         let currentFlags = NSEvent.modifierFlags.intersection(.deviceIndependentFlagsMask)
         return currentFlags.contains(requiredFlags)
+    }
+
+    private func isMultiZoneKeyHeld() -> Bool {
+        let multiZoneFlags = flagsForPersistedKey(UserDefaults.standard.string(forKey: "FracTile.MultiZoneKey") ?? "Command")
+        let currentFlags = NSEvent.modifierFlags.intersection(.deviceIndependentFlagsMask)
+        return currentFlags.contains(multiZoneFlags)
     }
 
     private func nearestZone(to point: InternalPoint) -> InternalRect? {
@@ -288,5 +265,19 @@ final class DragSnapController {
         case "control": return .control
         default: return .shift
         }
+    }
+    
+    private func computeUnionRect(forIndices indices: Set<Int>) -> CGRect? {
+        var unionRect: CGRect?
+        for index in indices {
+            let zone = activeZones[index]
+            let rect = CGRect(x: zone.x, y: zone.y, width: zone.width, height: zone.height)
+            if unionRect == nil {
+                unionRect = rect
+            } else {
+                unionRect = unionRect?.union(rect)
+            }
+        }
+        return unionRect
     }
 }
