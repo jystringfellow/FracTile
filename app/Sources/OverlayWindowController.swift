@@ -43,7 +43,7 @@ final class OverlayWindowController: NSWindowController {
             if let main = NSScreen.main {
                 window.setFrame(main.frame, display: true)
             }
-            window.makeKeyAndOrderFront(nil)
+            window.orderFront(nil)
         }
     }
 
@@ -54,7 +54,7 @@ final class OverlayWindowController: NSWindowController {
             window.orderOut(nil)
         }
         window.setFrame(screen.frame, display: true)
-        window.makeKeyAndOrderFront(nil)
+        window.orderFront(nil)
     }
 
     func hideOverlay() {
