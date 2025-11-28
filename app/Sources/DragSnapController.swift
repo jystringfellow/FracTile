@@ -23,7 +23,6 @@ final class DragSnapController {
     func start() {
         stop()
         
-        // Monitor all mouse events
         mouseDownMonitor = NSEvent.addGlobalMonitorForEvents(matching: .leftMouseDown) { [weak self] event in
             self?.handleMouseDown(event)
         }
@@ -36,7 +35,6 @@ final class DragSnapController {
             self?.handleMouseUp(event)
         }
         
-        // Monitor modifier key changes
         flagsChangedMonitor = NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { [weak self] event in
             self?.handleFlagsChanged(event)
         }
@@ -57,45 +55,32 @@ final class DragSnapController {
     }
 
     private func handleMouseDown(_ event: NSEvent) {
-        // Start tracking drag
         isDragging = true
         highlightedZoneIndices.removeAll()
         
-        // Check if we should show overlay
         updateOverlayVisibility()
     }
     
     private func handleMouseDragged(_ event: NSEvent) {
         guard isDragging, let screen = overlayScreen else { return }
         
-        // Convert mouse location from bottom-left origin to internal top-left coordinates
         let mouseLocationBottomLeft = NSEvent.mouseLocation
         let internalPoint = InternalPoint(fromBottomLeft: mouseLocationBottomLeft, screen: screen)
 
-        var zonesUnderCursor: Set<Int> = []
-        for (index, zoneRect) in activeZones.enumerated() {
-            if zoneRect.contains(internalPoint) {
-                zonesUnderCursor.insert(index)
-            }
-        }
+        let zonesUnderCursor = getZonesUnderCursor(at: internalPoint)
 
-        // Respect multi-zone modifier
         let multiZoneActive = isMultiZoneKeyHeld()
         
         var newHighlightedIndices: Set<Int>
         
         if multiZoneActive {
-            // Union current indices with new zone under cursor
             let accumulatedIndices = highlightedZoneIndices.union(zonesUnderCursor)
             
-            // Calculate bounding box of all accumulated zones to fill in the gaps
             let unionRect = computeUnionRect(forIndices: accumulatedIndices)
             
             if let bounds = unionRect {
-                // Highlight all zones that intersect with the bounding box (snap area)
                 var filledIndices: Set<Int> = []
                 for (index, zone) in activeZones.enumerated() {
-                    // Rectangles that share a boundary but do not overlap are not considered to intersect
                     if bounds.intersects(zone.cgRect) {
                         filledIndices.insert(index)
                     }
@@ -105,7 +90,6 @@ final class DragSnapController {
                 newHighlightedIndices = accumulatedIndices
             }
         } else {
-            // Replace selection with single zone (existing behavior)
             if let singleIndex = zonesUnderCursor.first {
                 newHighlightedIndices = [singleIndex]
             } else {
@@ -119,16 +103,13 @@ final class DragSnapController {
     private func handleMouseUp(_ event: NSEvent) {
         guard isDragging else { return }
         
-        // Check if we should snap based on current state
         let shouldSnap = isSnapKeyHeld() && !highlightedZoneIndices.isEmpty
         
         if shouldSnap {
-            // Find the window to snap
             let releasePointBL = NSEvent.mouseLocation
             var targetWindow: AXUIElement? = WindowControllerAX.getFocusedWindow()
             if targetWindow == nil {
                 if let screen = overlayScreen {
-                    // Convert release point to AX global top-left coordinates
                     let internalPoint = InternalPoint(fromBottomLeft: releasePointBL, screen: screen)
                     let axPoint = internalPoint.accessibilityPoint(for: screen)
                     targetWindow = WindowControllerAX.getWindowUnderPoint(axPoint)
@@ -138,7 +119,6 @@ final class DragSnapController {
             }
 
             if let windowElement = targetWindow, !highlightedZoneIndices.isEmpty, let screen = overlayScreen {
-                // Calculate union of all selected zones
                 if let unionRect = computeUnionRect(forIndices: highlightedZoneIndices) {
                     let internalZone = InternalRect(x: unionRect.origin.x, y: unionRect.origin.y, width: unionRect.width, height: unionRect.height)
                     let finalRect = internalZone.accessibilityFrame(for: screen)
@@ -147,7 +127,6 @@ final class DragSnapController {
             }
         }
         
-        // Cleanup
         isDragging = false
         highlightedZoneIndices.removeAll()
         activeZones.removeAll()
@@ -159,24 +138,21 @@ final class DragSnapController {
     }
     
     private func handleFlagsChanged(_ event: NSEvent) {
-        // Only care about flags changes during drag
         guard isDragging else { return }
         
-        // Check if multi-zone key is released to reset selection
         if !isMultiZoneKeyHeld() {
-            // Reset to just the zone under the cursor
             if let screen = overlayScreen {
                 let mouseLocationBottomLeft = NSEvent.mouseLocation
                 let internalPoint = InternalPoint(fromBottomLeft: mouseLocationBottomLeft, screen: screen)
                 
-                var zonesUnderCursor: Set<Int> = []
-                for (index, zoneRect) in activeZones.enumerated() {
-                    if zoneRect.contains(internalPoint) {
-                        zonesUnderCursor.insert(index)
-                    }
-                }
+                let zonesUnderCursor = getZonesUnderCursor(at: internalPoint)
                 
-                let newIndices = Set(zonesUnderCursor.prefix(1))
+                let newIndices: Set<Int>
+                if let singleIndex = zonesUnderCursor.first {
+                    newIndices = [singleIndex]
+                } else {
+                    newIndices = []
+                }
                 
                 updateHighlightedZones(newIndices)
             }
@@ -189,7 +165,6 @@ final class DragSnapController {
         let shouldShow = isDragging && isSnapKeyHeld()
         
         if shouldShow && !OverlayController.shared.isVisible {
-            // Need to show overlay - compute zones if not already done
             if activeZones.isEmpty {
                 let globalPoint = NSEvent.mouseLocation
                 guard let screenForPoint = NSScreen.screens.first(where: { $0.frame.contains(globalPoint) }) else { return }
@@ -212,7 +187,6 @@ final class DragSnapController {
                 }
             }
         } else if !shouldShow && OverlayController.shared.isVisible {
-            // Hide overlay
             DispatchQueue.main.async {
                 OverlayController.shared.hideOverlay()
             }
@@ -228,6 +202,16 @@ final class DragSnapController {
                 OverlayController.shared.highlightZones(sortedIndices)
             }
         }
+    }
+
+    private func getZonesUnderCursor(at point: InternalPoint) -> Set<Int> {
+        var zonesUnderCursor: Set<Int> = []
+        for (index, zoneRect) in activeZones.enumerated() {
+            if zoneRect.contains(point) {
+                zonesUnderCursor.insert(index)
+            }
+        }
+        return zonesUnderCursor
     }
 
     private func isSnapKeyHeld() -> Bool {
@@ -269,6 +253,7 @@ final class DragSnapController {
     private func computeUnionRect(forIndices indices: Set<Int>) -> CGRect? {
         var unionRect: CGRect?
         for index in indices {
+            guard index >= 0 && index < activeZones.count else { continue }
             let zone = activeZones[index]
             if unionRect == nil {
                 unionRect = zone.cgRect
