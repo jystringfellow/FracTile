@@ -72,18 +72,29 @@ final class DragSnapController {
         let mouseLocationBottomLeft = NSEvent.mouseLocation
         let internalPoint = InternalPoint(fromBottomLeft: mouseLocationBottomLeft, screen: screen)
 
-        var newHighlightedIndices: Set<Int> = []
+        var zonesUnderCursor: Set<Int> = []
         for (index, zoneRect) in activeZones.enumerated() {
             if zoneRect.contains(internalPoint) {
-                newHighlightedIndices.insert(index)
+                zonesUnderCursor.insert(index)
             }
         }
 
-        // Respect multi-zone modifier: if it's not held, reduce to a single zone
+        // Respect multi-zone modifier
         let multiZoneFlags = flagsForPersistedKey(UserDefaults.standard.string(forKey: "FracTile.MultiZoneKey") ?? "Command")
         let multiZoneActive = NSEvent.modifierFlags.intersection(.deviceIndependentFlagsMask).contains(multiZoneFlags)
-        if !multiZoneActive, let singleIndex = newHighlightedIndices.first {
-            newHighlightedIndices = [singleIndex]
+        
+        var newHighlightedIndices: Set<Int>
+        
+        if multiZoneActive {
+            // Union current indices with new zone under cursor
+            newHighlightedIndices = highlightedZoneIndices.union(zonesUnderCursor)
+        } else {
+            // Replace selection with single zone (existing behavior)
+            if let singleIndex = zonesUnderCursor.first {
+                newHighlightedIndices = [singleIndex]
+            } else {
+                newHighlightedIndices = []
+            }
         }
 
         if newHighlightedIndices != highlightedZoneIndices {
@@ -120,10 +131,23 @@ final class DragSnapController {
             }
 
             if let windowElement = targetWindow, !finalIndices.isEmpty, let screen = overlayScreen {
-                // Convert InternalRect to global top-left CGRect for Accessibility API
-                let targetInternalRect = activeZones[finalIndices[0]]
-                let targetAXRect = targetInternalRect.accessibilityFrame(for: screen)
-                _ = WindowControllerAX.setWindowFrame(windowElement, frame: targetAXRect)
+                // Calculate union of all selected zones
+                var unionRect: CGRect?
+                
+                for index in finalIndices {
+                    let zoneRect = activeZones[index]
+                    let axRect = zoneRect.accessibilityFrame(for: screen)
+                    
+                    if unionRect == nil {
+                        unionRect = axRect
+                    } else {
+                        unionRect = unionRect?.union(axRect)
+                    }
+                }
+                
+                if let finalRect = unionRect {
+                    _ = WindowControllerAX.setWindowFrame(windowElement, frame: finalRect)
+                }
             }
         }
         
