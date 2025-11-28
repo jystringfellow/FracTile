@@ -95,9 +95,8 @@ final class DragSnapController {
                 // Highlight all zones that intersect with the bounding box (snap area)
                 var filledIndices: Set<Int> = []
                 for (index, zone) in activeZones.enumerated() {
-                    let zoneRect = CGRect(x: zone.x, y: zone.y, width: zone.width, height: zone.height)
                     // Rectangles that share a boundary but do not overlap are not considered to intersect
-                    if bounds.intersects(zoneRect) {
+                    if bounds.intersects(zone.cgRect) {
                         filledIndices.insert(index)
                     }
                 }
@@ -271,11 +270,10 @@ final class DragSnapController {
         var unionRect: CGRect?
         for index in indices {
             let zone = activeZones[index]
-            let rect = CGRect(x: zone.x, y: zone.y, width: zone.width, height: zone.height)
             if unionRect == nil {
-                unionRect = rect
+                unionRect = zone.cgRect
             } else {
-                unionRect = unionRect?.union(rect)
+                unionRect = unionRect?.union(zone.cgRect)
             }
         }
         return unionRect
