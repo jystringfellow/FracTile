@@ -87,7 +87,34 @@ final class DragSnapController {
         
         if multiZoneActive {
             // Union current indices with new zone under cursor
-            newHighlightedIndices = highlightedZoneIndices.union(zonesUnderCursor)
+            let accumulatedIndices = highlightedZoneIndices.union(zonesUnderCursor)
+            
+            // Calculate bounding box of all accumulated zones to fill in the gaps
+            var unionRect: CGRect?
+            for index in accumulatedIndices {
+                let zone = activeZones[index]
+                let rect = CGRect(x: zone.x, y: zone.y, width: zone.width, height: zone.height)
+                if unionRect == nil {
+                    unionRect = rect
+                } else {
+                    unionRect = unionRect?.union(rect)
+                }
+            }
+            
+            if let bounds = unionRect {
+                // Highlight all zones that intersect with the bounding box (snap area)
+                var filledIndices: Set<Int> = []
+                for (index, zone) in activeZones.enumerated() {
+                    let zoneRect = CGRect(x: zone.x, y: zone.y, width: zone.width, height: zone.height)
+                    // Rectangles that share a boundary but do not overlap are not considered to intersect
+                    if bounds.intersects(zoneRect) {
+                        filledIndices.insert(index)
+                    }
+                }
+                newHighlightedIndices = filledIndices
+            } else {
+                newHighlightedIndices = accumulatedIndices
+            }
         } else {
             // Replace selection with single zone (existing behavior)
             if let singleIndex = zonesUnderCursor.first {
@@ -165,6 +192,36 @@ final class DragSnapController {
     private func handleFlagsChanged(_ event: NSEvent) {
         // Only care about flags changes during drag
         guard isDragging else { return }
+        
+        // Check if multi-zone key is released to reset selection
+        let multiZoneFlags = flagsForPersistedKey(UserDefaults.standard.string(forKey: "FracTile.MultiZoneKey") ?? "Command")
+        let currentFlags = NSEvent.modifierFlags.intersection(.deviceIndependentFlagsMask)
+        
+        if !currentFlags.contains(multiZoneFlags) {
+            // Reset to just the zone under the cursor
+            if let screen = overlayScreen {
+                let mouseLocationBottomLeft = NSEvent.mouseLocation
+                let internalPoint = InternalPoint(fromBottomLeft: mouseLocationBottomLeft, screen: screen)
+                
+                var zonesUnderCursor: Set<Int> = []
+                for (index, zoneRect) in activeZones.enumerated() {
+                    if zoneRect.contains(internalPoint) {
+                        zonesUnderCursor.insert(index)
+                    }
+                }
+                
+                let newIndices: Set<Int> = zonesUnderCursor.isEmpty ? [] : [zonesUnderCursor.first!]
+                
+                if newIndices != highlightedZoneIndices {
+                    highlightedZoneIndices = newIndices
+                    let sortedIndices = highlightedZoneIndices.sorted()
+                    DispatchQueue.main.async {
+                        OverlayController.shared.highlightZones(sortedIndices)
+                    }
+                }
+            }
+        }
+        
         updateOverlayVisibility()
     }
     
