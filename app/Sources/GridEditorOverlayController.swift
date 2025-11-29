@@ -75,6 +75,7 @@ struct GridEditorContainer: View {
     @State var layout: ZoneSet
     @State private var selection: Set<GridIndex> = []
     @State private var selectedZoneID: Int? = nil
+    @State private var toolbarOffset: CGSize = .zero
     var onClose: () -> Void
     var onSave: (ZoneSet) -> Void
     
@@ -90,11 +91,18 @@ struct GridEditorContainer: View {
             }
             
             // The toolbar
-            GridEditorToolbar(layout: $layout, selection: $selection, selectedZoneID: $selectedZoneID, onSave: {
-                onSave(layout)
-            }, onCancel: {
-                onClose()
-            })
+            GridEditorToolbar(
+                layout: $layout,
+                selection: $selection,
+                selectedZoneID: $selectedZoneID,
+                toolbarOffset: $toolbarOffset,
+                onSave: {
+                    onSave(layout)
+                }, 
+                onCancel: {
+                    onClose()
+                }
+            )
         }
     }
 }

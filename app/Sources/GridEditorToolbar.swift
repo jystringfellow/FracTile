@@ -1,11 +1,29 @@
 import SwiftUI
+import AppKit
+
+// View extension to handle cursor changes
+extension View {
+    func cursor(_ cursor: NSCursor) -> some View {
+        self.onContinuousHover { phase in
+            switch phase {
+            case .active:
+                cursor.push()
+            case .ended:
+                NSCursor.pop()
+            }
+        }
+    }
+}
 
 struct GridEditorToolbar: View {
     @Binding var layout: ZoneSet
     @Binding var selection: Set<GridIndex>
     @Binding var selectedZoneID: Int?
+    @Binding var toolbarOffset: CGSize
     var onSave: () -> Void
     var onCancel: () -> Void
+    
+    @State private var isDragging = false
     
     private var nameError: String? {
         if layout.name.trimmingCharacters(in: .whitespaces).isEmpty {
@@ -20,6 +38,39 @@ struct GridEditorToolbar: View {
     
     var body: some View {
         VStack(spacing: 12) {
+            // Drag handle area
+            HStack {
+                Image(systemName: "line.3.horizontal")
+                    .foregroundColor(.secondary)
+                    .font(.caption)
+                Spacer()
+                Text("Drag to move")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                Spacer()
+                Image(systemName: "line.3.horizontal")
+                    .foregroundColor(.secondary)
+                    .font(.caption)
+            }
+            .padding(.vertical, 4)
+            .contentShape(Rectangle())
+            .gesture(
+                DragGesture()
+                    .onChanged { value in
+                        isDragging = true
+                        toolbarOffset = CGSize(
+                            width: toolbarOffset.width + value.translation.width,
+                            height: toolbarOffset.height + value.translation.height
+                        )
+                    }
+                    .onEnded { _ in
+                        isDragging = false
+                    }
+            )
+            .cursor(isDragging ? .closedHand : .openHand)
+            
+            Divider()
+            
             VStack(spacing: 4) {
                 TextField("Layout Name", text: $layout.name)
                     .font(.headline)
@@ -113,8 +164,9 @@ struct GridEditorToolbar: View {
         .padding()
         .background(Material.regular)
         .cornerRadius(12)
-        .shadow(radius: 5)
+        .shadow(radius: isDragging ? 10 : 5)
         .frame(width: 250)
+        .offset(toolbarOffset)
     }
     
     private func updateGridDimensions(rows: Int, cols: Int) {
