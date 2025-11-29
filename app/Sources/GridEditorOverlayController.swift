@@ -13,11 +13,12 @@ class GridEditorOverlayController: NSObject, NSWindowDelegate {
     }
     
     func showEditor(on screen: NSScreen, with layout: ZoneSet) {
-        self.currentScreen = screen
-        self.currentLayout = layout
-        
         // Close existing if any
         closeEditor()
+        
+        // Set these AFTER closing the previous editor
+        self.currentScreen = screen
+        self.currentLayout = layout
         
         let window = EditorWindow(
             contentRect: screen.visibleFrame,
@@ -59,8 +60,29 @@ class GridEditorOverlayController: NSObject, NSWindowDelegate {
     }
     
     private func saveAndClose(_ layout: ZoneSet) {
-        closeEditor()
+        // Save the layout
         LayoutManager.shared.saveLayout(layout)
+        
+        // Set it as the active layout for the current screen
+        if let screen = currentScreen {
+            if let displayID = getDisplayID(for: screen) {
+                LayoutManager.shared.setSelectedLayout(layout.id, forDisplayID: displayID)
+            }
+        }
+        
+        closeEditor()
+    }
+    
+    // Helper to extract display ID from NSScreen
+    private func getDisplayID(for screen: NSScreen) -> Int? {
+        if let number = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber {
+            return number.intValue
+        }
+        // fallback: use index
+        if let idx = NSScreen.screens.firstIndex(of: screen) {
+            return idx
+        }
+        return nil
     }
 }
 

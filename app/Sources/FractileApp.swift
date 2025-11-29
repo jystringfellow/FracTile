@@ -191,6 +191,15 @@ struct FracTileApp: App {
                      }
                 }
             }
+            .onReceive(NotificationCenter.default.publisher(for: .selectedLayoutDidChange)) { notification in
+                // Update the active layout in the UI when it changes
+                if let userInfo = notification.userInfo,
+                   let displayID = userInfo["displayID"] as? Int,
+                   let layoutId = userInfo["layoutId"] as? String,
+                   displayID == activeDisplayID {
+                    activeLayoutId = layoutId
+                }
+            }
         }
         .menuBarExtraStyle(.window)
     }
