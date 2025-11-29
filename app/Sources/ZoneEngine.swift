@@ -107,6 +107,34 @@ public final class ZoneEngine {
         
         return info
     }
+    
+    // Distribute only rows evenly, keeping columns the same
+    public static func distributeRowsEvenly(gridInfo: GridLayoutInfo) -> GridLayoutInfo {
+        var info = gridInfo
+        let rows = info.rows
+        
+        // Redistribute rows percents
+        for rowIndex in 0..<rows {
+            let percent = percentageMultiplier * (rowIndex + 1) / rows - percentageMultiplier * rowIndex / rows
+            info.rowsPercents[rowIndex] = percent
+        }
+        
+        return info
+    }
+    
+    // Distribute only columns evenly, keeping rows the same
+    public static func distributeColumnsEvenly(gridInfo: GridLayoutInfo) -> GridLayoutInfo {
+        var info = gridInfo
+        let columns = info.columns
+        
+        // Redistribute columns percents
+        for colIndex in 0..<columns {
+            let percent = percentageMultiplier * (colIndex + 1) / columns - percentageMultiplier * colIndex / columns
+            info.columnsPercents[colIndex] = percent
+        }
+        
+        return info
+    }
 
     // Small helper to compute start/end/extent arrays from percents to reduce function length
     private static func computeDimensionInfo(count: Int, percents: [Int], totalSize: Int) -> [(start: Int, end: Int, extent: Int)] {

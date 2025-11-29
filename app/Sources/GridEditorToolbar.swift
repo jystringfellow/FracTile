@@ -110,8 +110,20 @@ struct GridEditorToolbar: View {
                     Stepper("\(layout.spacing)", value: $layout.spacing, in: 0...100)
                 }
                 
-                Button("Distribute Evenly") {
-                    distributeEvenly()
+                VStack(spacing: 8) {
+                    Button("Distribute All Evenly") {
+                        distributeEvenly()
+                    }
+                    
+                    HStack(spacing: 8) {
+                        Button("Even Rows") {
+                            distributeRowsEvenly()
+                        }
+                        
+                        Button("Even Columns") {
+                            distributeColumnsEvenly()
+                        }
+                    }
                 }
                 
                 Divider()
@@ -176,6 +188,16 @@ struct GridEditorToolbar: View {
     private func distributeEvenly() {
         guard let gridInfo = layout.gridInfo else { return }
         layout.gridInfo = ZoneEngine.distributeEvenly(rows: gridInfo.rows, columns: gridInfo.columns)
+    }
+    
+    private func distributeRowsEvenly() {
+        guard let gridInfo = layout.gridInfo else { return }
+        layout.gridInfo = ZoneEngine.distributeRowsEvenly(gridInfo: gridInfo)
+    }
+    
+    private func distributeColumnsEvenly() {
+        guard let gridInfo = layout.gridInfo else { return }
+        layout.gridInfo = ZoneEngine.distributeColumnsEvenly(gridInfo: gridInfo)
     }
     
     private func splitSelection(vertical: Bool) {
