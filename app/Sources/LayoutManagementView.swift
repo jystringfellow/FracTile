@@ -83,11 +83,29 @@ struct CreateLayoutView: View {
     @State private var type: ZoneSetLayoutType = .grid
     @Environment(\.presentationMode) var presentationMode
     
+    private var nameError: String? {
+        if name.trimmingCharacters(in: .whitespaces).isEmpty {
+            return "Name cannot be empty"
+        }
+        if LayoutManager.shared.layouts.contains(where: { $0.name == name }) {
+            return "A layout with this name already exists"
+        }
+        return nil
+    }
+    
     var body: some View {
         VStack(spacing: 20) {
             Text("Create New Layout").font(.headline)
             
-            TextField("Name", text: $name)
+            VStack(alignment: .leading, spacing: 4) {
+                TextField("Name", text: $name)
+                
+                if let error = nameError {
+                    Text(error)
+                        .font(.caption)
+                        .foregroundColor(.red)
+                }
+            }
             
             Picker("Type", selection: $type) {
                 Text("Grid").tag(ZoneSetLayoutType.grid)
@@ -100,11 +118,11 @@ struct CreateLayoutView: View {
                     presentationMode.wrappedValue.dismiss()
                 }
                 Button("Create") {
-                    if !LayoutManager.shared.layouts.contains(where: { $0.name == name }) {
+                    if nameError == nil {
                         onCreate(type, name)
                     }
                 }
-                .disabled(name.isEmpty || LayoutManager.shared.layouts.contains(where: { $0.name == name }))
+                .disabled(nameError != nil)
                 .keyboardShortcut(.defaultAction)
             }
         }

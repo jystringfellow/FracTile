@@ -7,12 +7,31 @@ struct GridEditorToolbar: View {
     var onSave: () -> Void
     var onCancel: () -> Void
     
+    private var nameError: String? {
+        if layout.name.trimmingCharacters(in: .whitespaces).isEmpty {
+            return "Name cannot be empty"
+        }
+        // Check if another layout with different ID has the same name
+        if LayoutManager.shared.layouts.contains(where: { $0.name == layout.name && $0.id != layout.id }) {
+            return "A layout with this name already exists"
+        }
+        return nil
+    }
+    
     var body: some View {
         VStack(spacing: 12) {
-            TextField("Layout Name", text: $layout.name)
-                .font(.headline)
-                .multilineTextAlignment(.center)
-                .textFieldStyle(PlainTextFieldStyle())
+            VStack(spacing: 4) {
+                TextField("Layout Name", text: $layout.name)
+                    .font(.headline)
+                    .multilineTextAlignment(.center)
+                    .textFieldStyle(PlainTextFieldStyle())
+                
+                if let error = nameError {
+                    Text(error)
+                        .font(.caption)
+                        .foregroundColor(.red)
+                }
+            }
             
             if layout.type == .grid, let gridInfo = layout.gridInfo {
                 HStack {
@@ -86,6 +105,7 @@ struct GridEditorToolbar: View {
                 Button("Save") {
                     onSave()
                 }
+                .disabled(nameError != nil)
                 .keyboardShortcut(.defaultAction)
                 .buttonStyle(.borderedProminent)
             }
