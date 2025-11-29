@@ -131,15 +131,15 @@ final class OverlayContentView: NSView {
             let rounded = NSBezierPath(roundedRect: localRect, xRadius: 6, yRadius: 6)
 
             if highlightedIndices.contains(index) {
-                NSColor.systemBlue.withAlphaComponent(0.3).setFill()
+                NSColor.systemPurple.withAlphaComponent(0.3).setFill()
                 rounded.fill()
-                NSColor.systemBlue.withAlphaComponent(1.0).setStroke()
+                NSColor.systemPurple.withAlphaComponent(1.0).setStroke()
                 rounded.lineWidth = 3.0
                 rounded.stroke()
             } else {
-                NSColor.systemBlue.withAlphaComponent(0.18).setFill()
+                NSColor.systemPurple.withAlphaComponent(0.18).setFill()
                 rounded.fill()
-                NSColor.systemBlue.withAlphaComponent(0.9).setStroke()
+                NSColor.systemPurple.withAlphaComponent(0.9).setStroke()
                 rounded.lineWidth = 2.0
                 rounded.stroke()
             }

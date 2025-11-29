@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 struct GridEditorView: View {
     @Binding var layout: ZoneSet
@@ -29,22 +30,76 @@ struct GridEditorView: View {
                         // Draw Cells
                         ForEach(0..<gridInfo.rows, id: \.self) { row in
                             ForEach(0..<gridInfo.columns, id: \.self) { col in
-                                let rect = self.rectFor(row: row, col: col, gridInfo: gridInfo, size: geometry.size)
+                                let rect = self.rectFor(row: row, col: col, gridInfo: gridInfo, size: geometry.size, spacing: layout.spacing)
                                 let idx = GridIndex(row: row, col: col)
                                 let isSelected = selection.contains(idx)
                                 let zoneIndex = gridInfo.cellChildMap[row][col]
                                 
                                 ZStack {
-                                    Rectangle()
-                                        .fill(isSelected ? Color.blue.opacity(0.3) : Color.white)
-                                        .border(Color.gray.opacity(0.5), width: 0.5)
+                                    RoundedRectangle(cornerRadius: 6)
+                                        .fill(isSelected ? Color.green.opacity(0.3) : Color.green.opacity(0.18))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 6)
+                                                .stroke(Color.green.opacity(isSelected ? 1.0 : 0.9), lineWidth: isSelected ? 3 : 2)
+                                        )
                                     
                                     Text("\(zoneIndex)")
                                         .font(.caption)
-                                        .foregroundColor(.gray)
+                                        .foregroundColor(.white)
                                 }
                                 .frame(width: rect.width, height: rect.height)
                                 .position(x: rect.midX, y: rect.midY)
+                            }
+                        }
+                        
+                        // Draw Dividers
+                        // Vertical Dividers
+                        ForEach(0..<gridInfo.columns - 1, id: \.self) { i in
+                            let xPerc = gridInfo.columnsPercents.prefix(i + 1).reduce(0, +)
+                            let x = (CGFloat(xPerc) / 10000.0) * geometry.size.width
+                            
+                            ZStack {
+                                // Hit target
+                                Rectangle()
+                                    .fill(Color.white.opacity(0.001))
+                                    .frame(width: 16, height: geometry.size.height)
+                                // Visual line
+                                Rectangle()
+                                    .fill(Color.green.opacity(0.5))
+                                    .frame(width: 2, height: geometry.size.height)
+                            }
+                            .position(x: x, y: geometry.size.height / 2)
+                            .onHover { hovering in
+                                if hovering {
+                                    NSCursor.resizeLeftRight.set()
+                                } else {
+                                    NSCursor.arrow.set()
+                                }
+                            }
+                        }
+                        
+                        // Horizontal Dividers
+                        ForEach(0..<gridInfo.rows - 1, id: \.self) { i in
+                            let yPerc = gridInfo.rowsPercents.prefix(i + 1).reduce(0, +)
+                            let y = (CGFloat(yPerc) / 10000.0) * geometry.size.height
+                            
+                            ZStack {
+                                // Hit target
+                                Rectangle()
+                                    .fill(Color.white.opacity(0.001))
+                                    .frame(width: geometry.size.width, height: 16)
+                                // Visual line
+                                Rectangle()
+                                    .fill(Color.green.opacity(0.5))
+                                    .frame(width: geometry.size.width, height: 2)
+                            }
+                            .position(x: geometry.size.width / 2, y: y)
+                            .onHover { hovering in
+                                if hovering {
+                                    NSCursor.resizeUpDown.set()
+                                } else {
+                                    NSCursor.arrow.set()
+                                }
                             }
                         }
                         
@@ -57,7 +112,7 @@ struct GridEditorView: View {
                                                   height: abs(current.y - start.y))
                                 path.addRect(rect)
                             }
-                            .stroke(Color.blue, lineWidth: 2)
+                            .stroke(Color.green, lineWidth: 2)
                         }
                     }
                     .background(Color.gray.opacity(0.1))
@@ -99,7 +154,7 @@ struct GridEditorView: View {
     
     // MARK: - Geometry Helpers
     
-    func rectFor(row: Int, col: Int, gridInfo: GridLayoutInfo, size: CGSize) -> CGRect {
+    func rectFor(row: Int, col: Int, gridInfo: GridLayoutInfo, size: CGSize, spacing: Int) -> CGRect {
         let totalW = size.width
         let totalH = size.height
         
@@ -114,7 +169,13 @@ struct GridEditorView: View {
         let y = (CGFloat(yPerc) / 10000.0) * totalH
         let h = (CGFloat(hPerc) / 10000.0) * totalH
         
-        return CGRect(x: x, y: y, width: w, height: h)
+        let halfSpacing = CGFloat(spacing) / 2.0
+        return CGRect(
+            x: x + halfSpacing,
+            y: y + halfSpacing,
+            width: max(0, w - CGFloat(spacing)),
+            height: max(0, h - CGFloat(spacing))
+        )
     }
     
     // MARK: - Interaction Logic
@@ -233,7 +294,7 @@ struct GridEditorView: View {
         
         for r in 0..<gridInfo.rows {
             for c in 0..<gridInfo.columns {
-                let cellRect = rectFor(row: r, col: c, gridInfo: gridInfo, size: geometrySize)
+                let cellRect = rectFor(row: r, col: c, gridInfo: gridInfo, size: geometrySize, spacing: layout.spacing)
                 if selectionRect.intersects(cellRect) {
                     newSelection.insert(GridIndex(row: r, col: c))
                 }

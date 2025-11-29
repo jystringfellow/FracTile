@@ -161,9 +161,11 @@ struct CreateLayoutView: View {
                     presentationMode.wrappedValue.dismiss()
                 }
                 Button("Create") {
-                    onCreate(type, name)
+                    if !LayoutManager.shared.layouts.contains(where: { $0.name == name }) {
+                        onCreate(type, name)
+                    }
                 }
-                .disabled(name.isEmpty)
+                .disabled(name.isEmpty || LayoutManager.shared.layouts.contains(where: { $0.name == name }))
                 .keyboardShortcut(.defaultAction)
             }
         }

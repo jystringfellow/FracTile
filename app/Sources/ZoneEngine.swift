@@ -80,6 +80,34 @@ public final class ZoneEngine {
         return info
     }
 
+    // Distribute rows and columns evenly, resetting the grid
+    public static func distributeEvenly(rows: Int, columns: Int) -> GridLayoutInfo {
+        var info = GridLayoutInfo(rows: rows, columns: columns)
+        
+        // rows percents
+        for rowIndex in 0..<rows {
+            let percent = percentageMultiplier * (rowIndex + 1) / rows - percentageMultiplier * rowIndex / rows
+            info.rowsPercents[rowIndex] = percent
+        }
+        
+        // columns percents
+        for colIndex in 0..<columns {
+            let percent = percentageMultiplier * (colIndex + 1) / columns - percentageMultiplier * colIndex / columns
+            info.columnsPercents[colIndex] = percent
+        }
+        
+        // Reset cellChildMap to default (one zone per cell)
+        var index = 0
+        for rowIndex in 0..<rows {
+            for colIndex in 0..<columns {
+                info.cellChildMap[rowIndex][colIndex] = index
+                index += 1
+            }
+        }
+        
+        return info
+    }
+
     // Small helper to compute start/end/extent arrays from percents to reduce function length
     private static func computeDimensionInfo(count: Int, percents: [Int], totalSize: Int) -> [(start: Int, end: Int, extent: Int)] {
         struct LocalInfo { var start = 0; var end = 0; var extent = 0 }

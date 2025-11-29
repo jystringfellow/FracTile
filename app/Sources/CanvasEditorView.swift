@@ -35,9 +35,12 @@ struct CanvasEditorView: View {
                             let isSelected = selectedZoneID == zone.id
                             
                             ZStack {
-                                Rectangle()
-                                    .fill(isSelected ? Color.blue.opacity(0.4) : Color.white.opacity(0.2))
-                                    .border(isSelected ? Color.blue : Color.white, width: isSelected ? 2 : 1)
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(isSelected ? Color.green.opacity(0.4) : Color.green.opacity(0.2))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 6)
+                                            .stroke(isSelected ? Color.green : Color.green.opacity(0.8), lineWidth: isSelected ? 3 : 2)
+                                    )
                                 
                                 Text("\(zone.id)")
                                     .foregroundColor(.white)

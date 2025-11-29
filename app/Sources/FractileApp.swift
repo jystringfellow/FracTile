@@ -114,7 +114,10 @@ struct FracTileApp: App {
                 modifierChoices: modifierChoices,
                 onEdit: {
                     if let layoutId = activeLayoutId, let layout = layouts.first(where: { $0.id == layoutId }) {
-                        LayoutWindowManager.shared.showEditLayout(layout)
+                        // Use the new overlay editor
+                        if let screen = displays.first(where: { $0.id == activeDisplayID })?.screen ?? NSScreen.main {
+                            GridEditorOverlayController.shared.showEditor(on: screen, with: layout)
+                        }
                     }
                 },
                 onAdd: {
