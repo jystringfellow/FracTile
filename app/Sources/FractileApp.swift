@@ -121,10 +121,33 @@ struct FracTileApp: App {
                     }
                 },
                 onAdd: {
-                    // Create a new default grid layout and open the editor for it
-                    let newLayout = LayoutFactory.createGridTemplate(name: "New Layout")
-                    if let screen = displays.first(where: { $0.id == activeDisplayID })?.screen ?? NSScreen.main {
-                        GridEditorOverlayController.shared.showEditor(on: screen, with: newLayout)
+                    // Show alert to choose between grid and canvas layout
+                    let alert = NSAlert()
+                    alert.messageText = "Create New Layout"
+                    alert.informativeText = "Choose the type of layout you want to create:"
+                    alert.addButton(withTitle: "Grid Layout")
+                    alert.addButton(withTitle: "Canvas Layout")
+                    alert.addButton(withTitle: "Cancel")
+                    
+                    let response = alert.runModal()
+                    
+                    let newLayout: ZoneSet?
+                    switch response {
+                    case .alertFirstButtonReturn:
+                        // Grid Layout
+                        newLayout = LayoutFactory.createGridTemplate(name: "New Layout")
+                    case .alertSecondButtonReturn:
+                        // Canvas Layout
+                        newLayout = LayoutFactory.createCanvasTemplate(name: "New Layout")
+                    default:
+                        // Cancel
+                        newLayout = nil
+                    }
+                    
+                    if let layout = newLayout {
+                        if let screen = displays.first(where: { $0.id == activeDisplayID })?.screen ?? NSScreen.main {
+                            GridEditorOverlayController.shared.showEditor(on: screen, with: layout)
+                        }
                     }
                 },
                 onImport: {

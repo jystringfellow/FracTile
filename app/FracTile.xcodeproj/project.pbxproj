@@ -16,7 +16,6 @@
 		598A2C2D2EDA514900A02912 /* LayoutManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598A2C2B2EDA514900A02912 /* LayoutManagementView.swift */; };
 		598A2C2E2EDA514900A02912 /* LayoutFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598A2C2A2EDA514900A02912 /* LayoutFactory.swift */; };
 		598A2C2F2EDA514900A02912 /* CanvasEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598A2C282EDA514900A02912 /* CanvasEditorView.swift */; };
-		598A2C312EDA533B00A02912 /* LayoutWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598A2C302EDA533B00A02912 /* LayoutWindowManager.swift */; };
 		598A2C342EDA5FF100A02912 /* GridEditorOverlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598A2C322EDA5FF100A02912 /* GridEditorOverlayController.swift */; };
 		598A2C352EDA5FF100A02912 /* GridEditorToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598A2C332EDA5FF100A02912 /* GridEditorToolbar.swift */; };
 		599477DC2EB58A6F005BEB8C /* ZoneEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477DB2EB58A6A005BEB8C /* ZoneEngine.swift */; };
@@ -46,7 +45,6 @@
 		598A2C292EDA514900A02912 /* GridEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridEditorView.swift; sourceTree = "<group>"; };
 		598A2C2A2EDA514900A02912 /* LayoutFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutFactory.swift; sourceTree = "<group>"; };
 		598A2C2B2EDA514900A02912 /* LayoutManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutManagementView.swift; sourceTree = "<group>"; };
-		598A2C302EDA533B00A02912 /* LayoutWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutWindowManager.swift; sourceTree = "<group>"; };
 		598A2C322EDA5FF100A02912 /* GridEditorOverlayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridEditorOverlayController.swift; sourceTree = "<group>"; };
 		598A2C332EDA5FF100A02912 /* GridEditorToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridEditorToolbar.swift; sourceTree = "<group>"; };
 		599477562EAE68C4005BEB8C /* FracTile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FracTile.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -106,7 +104,6 @@
 			children = (
 				598A2C322EDA5FF100A02912 /* GridEditorOverlayController.swift */,
 				598A2C332EDA5FF100A02912 /* GridEditorToolbar.swift */,
-				598A2C302EDA533B00A02912 /* LayoutWindowManager.swift */,
 				598A2C282EDA514900A02912 /* CanvasEditorView.swift */,
 				598A2C292EDA514900A02912 /* GridEditorView.swift */,
 				598A2C2A2EDA514900A02912 /* LayoutFactory.swift */,
@@ -251,7 +248,6 @@
 				599478092EB98B75005BEB8C /* EventMonitor.swift in Sources */,
 				5994780A2EB98B75005BEB8C /* SnapController.swift in Sources */,
 				599477FB2EB96593005BEB8C /* LayoutManager.swift in Sources */,
-				598A2C312EDA533B00A02912 /* LayoutWindowManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
