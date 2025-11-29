@@ -46,6 +46,24 @@ public final class LayoutManager {
         NotificationCenter.default.post(name: .layoutListDidChange, object: nil)
     }
 
+    public func generateUniqueLayoutName(baseName: String = "New Layout") -> String {
+        // Ensure loaded
+        if _layouts.isEmpty { _layouts = loadSavedLayouts() }
+        
+        // Check if base name is available
+        if !_layouts.contains(where: { $0.name == baseName }) {
+            return baseName
+        }
+        
+        // Find the next available number
+        var counter = 2
+        while _layouts.contains(where: { $0.name == "\(baseName) \(counter)" }) {
+            counter += 1
+        }
+        
+        return "\(baseName) \(counter)"
+    }
+    
     public func deleteLayout(withId id: String) {
         // Ensure loaded
         if _layouts.isEmpty { _layouts = loadSavedLayouts() }

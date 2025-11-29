@@ -132,13 +132,14 @@ struct FracTileApp: App {
                     let response = alert.runModal()
                     
                     let newLayout: ZoneSet?
+                    let uniqueName = LayoutManager.shared.generateUniqueLayoutName()
                     switch response {
                     case .alertFirstButtonReturn:
                         // Grid Layout
-                        newLayout = LayoutFactory.createGridTemplate(name: "New Layout")
+                        newLayout = LayoutFactory.createGridTemplate(name: uniqueName)
                     case .alertSecondButtonReturn:
                         // Canvas Layout
-                        newLayout = LayoutFactory.createCanvasTemplate(name: "New Layout")
+                        newLayout = LayoutFactory.createCanvasTemplate(name: uniqueName)
                     default:
                         // Cancel
                         newLayout = nil

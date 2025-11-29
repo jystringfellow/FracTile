@@ -79,9 +79,15 @@ extension ZoneSet: Identifiable {}
 
 struct CreateLayoutView: View {
     var onCreate: (ZoneSetLayoutType, String) -> Void
-    @State private var name = "New Layout"
+    @State private var name = ""
     @State private var type: ZoneSetLayoutType = .grid
     @Environment(\.presentationMode) var presentationMode
+    
+    init(onCreate: @escaping (ZoneSetLayoutType, String) -> Void) {
+        self.onCreate = onCreate
+        // Generate unique name on initialization
+        _name = State(initialValue: LayoutManager.shared.generateUniqueLayoutName())
+    }
     
     private var nameError: String? {
         if name.trimmingCharacters(in: .whitespaces).isEmpty {
