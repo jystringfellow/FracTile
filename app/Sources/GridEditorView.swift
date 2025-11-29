@@ -1,21 +1,21 @@
 import SwiftUI
 import AppKit
 
+struct GridIndex: Hashable {
+    let row: Int
+    let col: Int
+}
+
 struct GridEditorView: View {
     @Binding var layout: ZoneSet
+    @Binding var selection: Set<GridIndex>
     
-    @State private var selection: Set<GridIndex> = []
     @State private var dragStart: CGPoint?
     @State private var currentDrag: CGPoint?
     
     // Resizing state
     @State private var resizingDivider: DividerType?
     @State private var initialPercents: [Int] = [] // Store percents at start of drag
-    
-    struct GridIndex: Hashable {
-        let row: Int
-        let col: Int
-    }
     
     enum DividerType: Hashable {
         case row(Int) // Index of the row BEFORE the divider
@@ -129,26 +129,6 @@ struct GridEditorView: View {
             } else {
                 Text("Not a grid layout")
             }
-            
-            HStack {
-                Button("Merge Selected") {
-                    mergeSelection()
-                }
-                .disabled(selection.count < 2)
-                
-                Spacer()
-                
-                Button("Split Vertical") {
-                    splitSelection(vertical: true)
-                }
-                .disabled(selection.isEmpty)
-                
-                Button("Split Horizontal") {
-                    splitSelection(vertical: false)
-                }
-                .disabled(selection.isEmpty)
-            }
-            .padding()
         }
     }
     
@@ -305,70 +285,10 @@ struct GridEditorView: View {
     
     // MARK: - Actions
     
-    func mergeSelection() {
-        guard var gridInfo = layout.gridInfo else { return }
-        guard !selection.isEmpty else { return }
-        
-        let indices = selection.map { gridInfo.cellChildMap[$0.row][$0.col] }
-        guard let targetIndex = indices.min() else { return }
-        
-        for cell in selection {
-            gridInfo.cellChildMap[cell.row][cell.col] = targetIndex
-        }
-        
-        layout.gridInfo = gridInfo
-        selection.removeAll()
-    }
+    // mergeSelection removed as requested
     
-    func splitSelection(vertical: Bool) {
-        guard var gridInfo = layout.gridInfo else { return }
-        // For simplicity, only split if 1 cell is selected, or handle first selected
-        guard let cell = selection.first else { return }
-        
-        if vertical {
-            // Split column c
-            let c = cell.col
-            let oldPercent = gridInfo.columnsPercents[c]
-            let newPercent1 = oldPercent / 2
-            let newPercent2 = oldPercent - newPercent1
-            
-            gridInfo.columnsPercents[c] = newPercent1
-            gridInfo.columnsPercents.insert(newPercent2, at: c + 1)
-            gridInfo.columns += 1
-            
-            for r in 0..<gridInfo.rows {
-                let existingIndex = gridInfo.cellChildMap[r][c]
-                gridInfo.cellChildMap[r].insert(existingIndex, at: c + 1)
-            }
-            
-            // New index for the split part
-            let maxIndex = gridInfo.cellChildMap.flatMap{$0}.max() ?? 0
-            gridInfo.cellChildMap[cell.row][c+1] = maxIndex + 1
-            
-        } else {
-            // Split row r
-            let r = cell.row
-            let oldPercent = gridInfo.rowsPercents[r]
-            let newPercent1 = oldPercent / 2
-            let newPercent2 = oldPercent - newPercent1
-            
-            gridInfo.rowsPercents[r] = newPercent1
-            gridInfo.rowsPercents.insert(newPercent2, at: r + 1)
-            gridInfo.rows += 1
-            
-            var newRow: [Int] = []
-            for c in 0..<gridInfo.columns {
-                newRow.append(gridInfo.cellChildMap[r][c])
-            }
-            gridInfo.cellChildMap.insert(newRow, at: r + 1)
-            
-            let maxIndex = gridInfo.cellChildMap.flatMap{$0}.max() ?? 0
-            gridInfo.cellChildMap[r+1][cell.col] = maxIndex + 1
-        }
-        
-        layout.gridInfo = gridInfo
-        selection.removeAll()
-    }
+    // splitSelection moved to GridEditorContainer logic, but we need to expose helper or move logic out.
+    // Since GridEditorView is just a view now, the logic should be in the container or controller.
 }
 
 // Helper for CGPoint arithmetic

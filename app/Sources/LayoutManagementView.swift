@@ -80,6 +80,9 @@ struct LayoutEditorContainer: View {
     var onSave: (ZoneSet) -> Void
     @Environment(\.presentationMode) var presentationMode
     
+    @State private var selection: Set<GridIndex> = []
+    @State private var selectedZoneID: Int? = nil
+    
     var body: some View {
         VStack {
             HStack {
@@ -126,9 +129,9 @@ struct LayoutEditorContainer: View {
             Divider()
             
             if layout.type == .grid {
-                GridEditorView(layout: $layout)
+                GridEditorView(layout: $layout, selection: $selection)
             } else if layout.type == .canvas {
-                CanvasEditorView(layout: $layout)
+                CanvasEditorView(layout: $layout, selectedZoneID: $selectedZoneID)
             } else {
                 Text("Unsupported layout type for editing")
                     .frame(maxWidth: .infinity, maxHeight: .infinity)

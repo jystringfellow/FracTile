@@ -121,7 +121,11 @@ struct FracTileApp: App {
                     }
                 },
                 onAdd: {
-                    LayoutWindowManager.shared.showAddLayout()
+                    // Create a new default grid layout and open the editor for it
+                    let newLayout = LayoutFactory.createGridTemplate(name: "New Layout")
+                    if let screen = displays.first(where: { $0.id == activeDisplayID })?.screen ?? NSScreen.main {
+                        GridEditorOverlayController.shared.showEditor(on: screen, with: newLayout)
+                    }
                 },
                 onImport: {
                     // Import will open the editor where the import UI lives

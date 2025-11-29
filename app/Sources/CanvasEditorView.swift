@@ -2,8 +2,8 @@ import SwiftUI
 
 struct CanvasEditorView: View {
     @Binding var layout: ZoneSet
+    @Binding var selectedZoneID: Int?
     
-    @State private var selectedZoneID: Int?
     @State private var dragStart: CGPoint?
     @State private var initialZone: CanvasZone?
     @State private var dragMode: DragMode = .none
@@ -68,25 +68,6 @@ struct CanvasEditorView: View {
             } else {
                 Text("Not a canvas layout")
             }
-            
-            HStack {
-                Button("Add Zone") {
-                    addZone()
-                }
-                
-                Button("Remove Zone") {
-                    removeZone()
-                }
-                .disabled(selectedZoneID == nil)
-                
-                Spacer()
-                
-                Button("Bring to Front") {
-                    bringToFront()
-                }
-                .disabled(selectedZoneID == nil)
-            }
-            .padding()
         }
     }
     

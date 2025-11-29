@@ -73,6 +73,8 @@ class EditorWindow: NSWindow {
 // Container view to manage state for the editor
 struct GridEditorContainer: View {
     @State var layout: ZoneSet
+    @State private var selection: Set<GridIndex> = []
+    @State private var selectedZoneID: Int? = nil
     var onClose: () -> Void
     var onSave: (ZoneSet) -> Void
     
@@ -80,15 +82,15 @@ struct GridEditorContainer: View {
         ZStack {
             // The editor view
             if layout.type == .grid {
-                GridEditorView(layout: $layout)
+                GridEditorView(layout: $layout, selection: $selection)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if layout.type == .canvas {
-                CanvasEditorView(layout: $layout)
+                CanvasEditorView(layout: $layout, selectedZoneID: $selectedZoneID)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             
             // The toolbar
-            GridEditorToolbar(layout: $layout, onSave: {
+            GridEditorToolbar(layout: $layout, selection: $selection, selectedZoneID: $selectedZoneID, onSave: {
                 onSave(layout)
             }, onCancel: {
                 onClose()
