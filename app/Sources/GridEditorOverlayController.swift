@@ -20,14 +20,14 @@ class GridEditorOverlayController: NSObject, NSWindowDelegate {
         closeEditor()
         
         let window = EditorWindow(
-            contentRect: screen.frame,
+            contentRect: screen.visibleFrame,
             styleMask: [.borderless, .fullSizeContentView],
             backing: .buffered,
             defer: false
         )
         
         window.isReleasedWhenClosed = false
-        window.level = .floating
+        window.level = .statusBar
         window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         window.backgroundColor = NSColor.black.withAlphaComponent(0.5)
         window.isOpaque = false
@@ -44,7 +44,7 @@ class GridEditorOverlayController: NSObject, NSWindowDelegate {
         
         let hostingController = NSHostingController(rootView: editorView)
         window.contentViewController = hostingController
-        window.setFrame(screen.frame, display: true)
+        window.setFrame(screen.visibleFrame, display: true)
         
         self.overlayWindow = window
         window.makeKeyAndOrderFront(nil)
