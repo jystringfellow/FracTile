@@ -169,6 +169,37 @@ struct FracTileApp: App {
                         }
                     }
                 },
+                onFactoryReset: {
+                    let alert = NSAlert()
+                    alert.messageText = "Factory Reset?"
+                    alert.informativeText = "This will delete all saved layouts and settings, and restore FracTile to its default state. This cannot be undone."
+                    alert.addButton(withTitle: "Reset")
+                    alert.addButton(withTitle: "Cancel")
+                    alert.alertStyle = .warning
+                    
+                    let response = alert.runModal()
+                    if response == .alertFirstButtonReturn {
+                        // Perform factory reset
+                        LayoutManager.shared.factoryReset()
+                        
+                        // Reset snap keys to defaults
+                        snapKey = "Shift"
+                        multiZoneKey = "Command"
+                        
+                        // Reload layouts
+                        loadLayouts()
+                        
+                        // Show confirmation
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            let confirmAlert = NSAlert()
+                            confirmAlert.messageText = "Factory Reset Complete"
+                            confirmAlert.informativeText = "FracTile has been reset to factory defaults."
+                            confirmAlert.addButton(withTitle: "OK")
+                            confirmAlert.alertStyle = .informational
+                            confirmAlert.runModal()
+                        }
+                    }
+                },
                 onQuit: {
                     NSApp.terminate(nil)
                 },
@@ -326,6 +357,7 @@ struct MenuBarContent: View {
     var onAdd: () -> Void = {}
     var onImport: () -> Void = {}
     var onDelete: () -> Void = {}
+    var onFactoryReset: () -> Void = {}
     var onQuit: () -> Void = {}
     var onRefreshDisplays: () -> Void = {}
 
@@ -440,6 +472,19 @@ struct MenuBarContent: View {
 
             Divider()
 
+            // Factory Reset button
+            HStack {
+                Spacer()
+                Button(action: { onFactoryReset() }, label: {
+                    Image(systemName: "arrow.counterclockwise")
+                    Text("Factory Reset")
+                })
+                .foregroundColor(.red)
+                Spacer()
+            }
+
+            Divider()
+
             // Center the Quit button
             HStack {
                 Spacer()
@@ -475,6 +520,7 @@ struct MenuBarContent: View {
         onAdd: {},
         onImport: {},
         onDelete: {},
+        onFactoryReset: {},
         onQuit: {}
     )
     .frame(width: 360)

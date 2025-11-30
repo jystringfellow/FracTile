@@ -94,6 +94,41 @@ public final class LayoutManager {
         persistLayouts()
         NotificationCenter.default.post(name: .layoutListDidChange, object: nil)
     }
+    
+    /// Factory reset: Clear all UserDefaults and reload default layouts
+    public func factoryReset() {
+        // Clear all FracTile-related UserDefaults keys
+        let keys = [
+            "FracTile.HasSeededDefaults",
+            "FracTile.SavedLayouts",
+            "FracTile.SnapKey",
+            "FracTile.MultiZoneKey"
+        ]
+        
+        for key in keys {
+            userDefaults.removeObject(forKey: key)
+        }
+        
+        // Clear all display-specific layout selections
+        // Get all UserDefaults keys and remove those matching our pattern
+        if let domain = Bundle.main.bundleIdentifier {
+            userDefaults.removePersistentDomain(forName: domain)
+            userDefaults.synchronize()
+        }
+        
+        // Reset in-memory layouts to defaults
+        _layouts = DefaultLayouts.all
+        
+        // Re-persist defaults
+        persistLayouts()
+        
+        // Mark as seeded
+        userDefaults.set(true, forKey: "FracTile.HasSeededDefaults")
+        userDefaults.synchronize()
+        
+        // Notify that layouts changed
+        NotificationCenter.default.post(name: .layoutListDidChange, object: nil)
+    }
 
     private func loadSavedLayouts() -> [ZoneSet] {
         if let data = userDefaults.data(forKey: layoutsKey),
