@@ -34,6 +34,7 @@ struct GridEditorView: View {
                                 let idx = GridIndex(row: row, col: col)
                                 let isSelected = selection.contains(idx)
                                 let zoneIndex = gridInfo.cellChildMap[row][col]
+                                let zoneNumber = zoneIndex + 1
                                 
                                 ZStack {
                                     RoundedRectangle(cornerRadius: 6)
@@ -43,7 +44,7 @@ struct GridEditorView: View {
                                                 .stroke(Color.green.opacity(isSelected ? 1.0 : 0.9), lineWidth: isSelected ? 3 : 2)
                                         )
                                     
-                                    Text("\(zoneIndex)")
+                                    Text("\(zoneNumber)")
                                         .font(.caption)
                                         .foregroundColor(.white)
                                 }
