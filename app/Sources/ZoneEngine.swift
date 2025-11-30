@@ -80,6 +80,62 @@ public final class ZoneEngine {
         return info
     }
 
+    // Distribute rows and columns evenly, resetting the grid
+    public static func distributeEvenly(rows: Int, columns: Int) -> GridLayoutInfo {
+        var info = GridLayoutInfo(rows: rows, columns: columns)
+        
+        // rows percents
+        for rowIndex in 0..<rows {
+            let percent = percentageMultiplier * (rowIndex + 1) / rows - percentageMultiplier * rowIndex / rows
+            info.rowsPercents[rowIndex] = percent
+        }
+        
+        // columns percents
+        for colIndex in 0..<columns {
+            let percent = percentageMultiplier * (colIndex + 1) / columns - percentageMultiplier * colIndex / columns
+            info.columnsPercents[colIndex] = percent
+        }
+        
+        // Reset cellChildMap to default (one zone per cell)
+        var index = 0
+        for rowIndex in 0..<rows {
+            for colIndex in 0..<columns {
+                info.cellChildMap[rowIndex][colIndex] = index
+                index += 1
+            }
+        }
+        
+        return info
+    }
+    
+    // Distribute only rows evenly, keeping columns the same
+    public static func distributeRowsEvenly(gridInfo: GridLayoutInfo) -> GridLayoutInfo {
+        var info = gridInfo
+        let rows = info.rows
+        
+        // Redistribute rows percents
+        for rowIndex in 0..<rows {
+            let percent = percentageMultiplier * (rowIndex + 1) / rows - percentageMultiplier * rowIndex / rows
+            info.rowsPercents[rowIndex] = percent
+        }
+        
+        return info
+    }
+    
+    // Distribute only columns evenly, keeping rows the same
+    public static func distributeColumnsEvenly(gridInfo: GridLayoutInfo) -> GridLayoutInfo {
+        var info = gridInfo
+        let columns = info.columns
+        
+        // Redistribute columns percents
+        for colIndex in 0..<columns {
+            let percent = percentageMultiplier * (colIndex + 1) / columns - percentageMultiplier * colIndex / columns
+            info.columnsPercents[colIndex] = percent
+        }
+        
+        return info
+    }
+
     // Small helper to compute start/end/extent arrays from percents to reduce function length
     private static func computeDimensionInfo(count: Int, percents: [Int], totalSize: Int) -> [(start: Int, end: Int, extent: Int)] {
         struct LocalInfo { var start = 0; var end = 0; var extent = 0 }
@@ -143,6 +199,32 @@ public final class ZoneEngine {
                     zoneIdCounter = zoneId + 1
                 }
             }
+        }
+        
+        return zones
+    }
+
+    // Calculate canvas zones from CanvasLayoutInfo
+    public static func calculateCanvasZones(workArea: CGRect, on screen: NSScreen, canvasInfo: CanvasLayoutInfo, spacing: Int) -> [Zone] {
+        let workAreaWidth = workArea.width
+        let workAreaHeight = workArea.height
+        
+        let scaleX = workAreaWidth / CGFloat(canvasInfo.lastWorkAreaWidth)
+        let scaleY = workAreaHeight / CGFloat(canvasInfo.lastWorkAreaHeight)
+        
+        // Convert workArea to InternalRect to get its top-left relative to screen
+        let workAreaInternal = InternalRect(fromBottomLeft: workArea, screen: screen)
+        
+        var zones: [Zone] = []
+        
+        for canvasZone in canvasInfo.zones {
+            let x = workAreaInternal.x + CGFloat(canvasZone.x) * scaleX
+            let y = workAreaInternal.y + CGFloat(canvasZone.y) * scaleY
+            let w = CGFloat(canvasZone.width) * scaleX
+            let h = CGFloat(canvasZone.height) * scaleY
+            
+            let rect = InternalRect(x: x, y: y, width: w, height: h)
+            zones.append(Zone(id: canvasZone.id, rect: rect))
         }
         
         return zones

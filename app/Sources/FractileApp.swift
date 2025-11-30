@@ -113,32 +113,61 @@ struct FracTileApp: App {
                 multiZoneKey: $multiZoneKey,
                 modifierChoices: modifierChoices,
                 onEdit: {
-                    // Edit placeholder
-                    let alert = NSAlert()
-                    alert.messageText = "Edit Layout"
-                    alert.informativeText = "Editing layouts is not implemented yet."
-                    alert.addButton(withTitle: "OK")
-                    alert.runModal()
+                    if let layoutId = activeLayoutId, let layout = layouts.first(where: { $0.id == layoutId }) {
+                        // Use the new overlay editor
+                        if let screen = displays.first(where: { $0.id == activeDisplayID })?.screen ?? NSScreen.main {
+                            GridEditorOverlayController.shared.showEditor(on: screen, with: layout)
+                        }
+                    }
                 },
                 onAdd: {
-                    // Add placeholder
+                    // Show alert to choose between grid and canvas layout
                     let alert = NSAlert()
-                    alert.messageText = "Add Layout"
-                    alert.informativeText = "Adding layouts is not implemented yet."
-                    alert.addButton(withTitle: "OK")
-                    alert.runModal()
+                    alert.messageText = "Create New Layout"
+                    alert.informativeText = "Choose the type of layout you want to create:"
+                    alert.addButton(withTitle: "Grid Layout")
+                    alert.addButton(withTitle: "Canvas Layout")
+                    alert.addButton(withTitle: "Cancel")
+                    
+                    let response = alert.runModal()
+                    
+                    let newLayout: ZoneSet?
+                    let uniqueName = LayoutManager.shared.generateUniqueLayoutName()
+                    switch response {
+                    case .alertFirstButtonReturn:
+                        // Grid Layout
+                        newLayout = LayoutFactory.createGridTemplate(name: uniqueName)
+                    case .alertSecondButtonReturn:
+                        // Canvas Layout
+                        newLayout = LayoutFactory.createCanvasTemplate(name: uniqueName)
+                    default:
+                        // Cancel
+                        newLayout = nil
+                    }
+                    
+                    if let layout = newLayout {
+                        if let screen = displays.first(where: { $0.id == activeDisplayID })?.screen ?? NSScreen.main {
+                            GridEditorOverlayController.shared.showEditor(on: screen, with: layout)
+                        }
+                    }
                 },
                 onImport: {
                     // Import will open the editor where the import UI lives
                     EditorWindowController.shared.showEditor()
                 },
                 onDelete: {
-                    // Delete placeholder
-                    let alert = NSAlert()
-                    alert.messageText = "Delete Layout"
-                    alert.informativeText = "Deleting layouts is not implemented yet."
-                    alert.addButton(withTitle: "OK")
-                    alert.runModal()
+                    if let layoutId = activeLayoutId {
+                        let alert = NSAlert()
+                        alert.messageText = "Delete Layout?"
+                        alert.informativeText = "Are you sure you want to delete this layout? This cannot be undone."
+                        alert.addButton(withTitle: "Delete")
+                        alert.addButton(withTitle: "Cancel")
+                        
+                        let response = alert.runModal()
+                        if response == .alertFirstButtonReturn {
+                            LayoutManager.shared.deleteLayout(withId: layoutId)
+                        }
+                    }
                 },
                 onQuit: {
                     NSApp.terminate(nil)
@@ -149,6 +178,28 @@ struct FracTileApp: App {
             )
             .frame(width: 360)
             .padding()
+            .onReceive(NotificationCenter.default.publisher(for: .layoutListDidChange)) { _ in
+                loadLayouts()
+                // Check if active layout still exists
+                if let active = activeLayoutId, !layouts.contains(where: { $0.id == active }) {
+                     // Select default
+                     if let defaultLayout = layouts.first(where: { $0.name == "Grid 2×2" }) ?? layouts.first {
+                         activeLayoutId = defaultLayout.id
+                         if let displayID = activeDisplayID {
+                             LayoutManager.shared.setSelectedLayout(defaultLayout.id, forDisplayID: displayID)
+                         }
+                     }
+                }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .selectedLayoutDidChange)) { notification in
+                // Update the active layout in the UI when it changes
+                if let userInfo = notification.userInfo,
+                   let displayID = userInfo["displayID"] as? Int,
+                   let layoutId = userInfo["layoutId"] as? String,
+                   displayID == activeDisplayID {
+                    activeLayoutId = layoutId
+                }
+            }
         }
         .menuBarExtraStyle(.window)
     }
