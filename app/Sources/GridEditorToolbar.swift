@@ -202,11 +202,13 @@ struct GridEditorToolbar: View {
     
     private func splitSelection(vertical: Bool) {
         guard var gridInfo = layout.gridInfo else { return }
-        // For simplicity, only split if 1 cell is selected, or handle first selected
         guard let cell = selection.first else { return }
         
+        // Get the current max zone index to generate new zone indices
+        var maxIndex = gridInfo.cellChildMap.flatMap{$0}.max() ?? 0
+        
         if vertical {
-            // Split column c
+            // Split column c - this splits ALL zones in this column
             let c = cell.col
             let oldPercent = gridInfo.columnsPercents[c]
             let newPercent1 = oldPercent / 2
@@ -216,17 +218,15 @@ struct GridEditorToolbar: View {
             gridInfo.columnsPercents.insert(newPercent2, at: c + 1)
             gridInfo.columns += 1
             
+            // For each row, duplicate the column and create a new zone for the right half
             for r in 0..<gridInfo.rows {
-                let existingIndex = gridInfo.cellChildMap[r][c]
-                gridInfo.cellChildMap[r].insert(existingIndex, at: c + 1)
+                // Create a new zone index for the right half
+                maxIndex += 1
+                gridInfo.cellChildMap[r].insert(maxIndex, at: c + 1)
             }
             
-            // New index for the split part
-            let maxIndex = gridInfo.cellChildMap.flatMap{$0}.max() ?? 0
-            gridInfo.cellChildMap[cell.row][c+1] = maxIndex + 1
-            
         } else {
-            // Split row r
+            // Split row r - this splits ALL zones in this row
             let r = cell.row
             let oldPercent = gridInfo.rowsPercents[r]
             let newPercent1 = oldPercent / 2
@@ -236,14 +236,13 @@ struct GridEditorToolbar: View {
             gridInfo.rowsPercents.insert(newPercent2, at: r + 1)
             gridInfo.rows += 1
             
+            // Create new row with new zone indices for each cell
             var newRow: [Int] = []
             for c in 0..<gridInfo.columns {
-                newRow.append(gridInfo.cellChildMap[r][c])
+                maxIndex += 1
+                newRow.append(maxIndex)
             }
             gridInfo.cellChildMap.insert(newRow, at: r + 1)
-            
-            let maxIndex = gridInfo.cellChildMap.flatMap{$0}.max() ?? 0
-            gridInfo.cellChildMap[r+1][cell.col] = maxIndex + 1
         }
         
         layout.gridInfo = gridInfo
