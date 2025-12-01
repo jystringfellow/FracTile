@@ -33,6 +33,7 @@ struct CanvasEditorView: View {
                         ForEach(canvasInfo.zones, id: \.id) { zone in
                             let rect = rectFor(zone: zone, canvasInfo: canvasInfo, size: geometry.size)
                             let isSelected = selectedZoneID == zone.id
+                            let zoneNumber = zone.id + 1
                             
                             ZStack {
                                 RoundedRectangle(cornerRadius: 6)
@@ -42,7 +43,7 @@ struct CanvasEditorView: View {
                                             .stroke(isSelected ? Color.green : Color.green.opacity(0.8), lineWidth: isSelected ? 3 : 2)
                                     )
                                 
-                                Text("\(zone.id)")
+                                Text("\(zoneNumber)")
                                     .foregroundColor(.white)
                             }
                             .frame(width: rect.width, height: rect.height)
@@ -109,7 +110,6 @@ struct CanvasEditorView: View {
     }
     
     // MARK: - Interaction Logic
-    
     func handleDrag(value: DragGesture.Value, size: CGSize, canvasInfo: CanvasLayoutInfo) {
         if dragStart == nil {
             dragStart = value.startLocation
