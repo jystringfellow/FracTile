@@ -64,11 +64,49 @@ public struct DefaultLayouts {
         let rows2 = ZoneSet(name: "Rows (2)", gridInfo: makeGridInfo(rows: 2, columns: 1), spacing: 12)
         sets.append(rows2)
 
-        // TODO: Allow for not grid based canvas layouts with an example here.
-        // Focus layout (mimic LayoutConfigurator::Focus — we approximate with a single large center zone and stacked smaller ones)
-        // For simplicity here create a 1x1 "focus" grid -- editor will later create better Focus layouts
-        //let focus = ZoneSet(name: "Focus (stack)", gridInfo: makeGridInfo(rows: 1, columns: 1), spacing: 12)
-        //sets.append(focus)
+        // Focus layout with cascading zones (canvas-based)
+        // Matches FancyZones::LayoutConfigurator::Focus behavior
+        let focus = ZoneSet(name: "Focus (5 zones)", canvasInfo: {
+            let zoneCount = 5
+            let referenceWidth = 2560  // reference work area dimensions
+            let referenceHeight = 1440
+            
+            var canvasZones: [CanvasZone] = []
+            
+            // Initial zone dimensions: 40% of work area
+            var left = 100
+            var top = 100
+            var right = left + Int(Double(referenceWidth) * 0.4)
+            var bottom = top + Int(Double(referenceHeight) * 0.4)
+            
+            // Increment for cascading effect (50 pixels per zone)
+            let xIncrement = (zoneCount <= 1) ? 0 : 50
+            let yIncrement = (zoneCount <= 1) ? 0 : 50
+            
+            for i in 0..<zoneCount {
+                let zone = CanvasZone(
+                    x: left,
+                    y: top,
+                    width: right - left,
+                    height: bottom - top,
+                    id: i
+                )
+                canvasZones.append(zone)
+                
+                // Cascade next zone
+                left += xIncrement
+                right += xIncrement
+                top += yIncrement
+                bottom += yIncrement
+            }
+            
+            return CanvasLayoutInfo(
+                zones: canvasZones,
+                lastWorkAreaWidth: referenceWidth,
+                lastWorkAreaHeight: referenceHeight
+            )
+        }(), spacing: 12)
+        sets.append(focus)
 
         // Priority grids and some common asymmetric grids:
         // PriorityGrid (2..5) are often predefined; we add a couple of useful variants:
