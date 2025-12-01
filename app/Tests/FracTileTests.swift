@@ -748,11 +748,24 @@ class SnappingTests: XCTestCase {
         )
         
         // Move should be clamped within min/max
-        let initialPosition = helper.position
         helper.move(delta: 1000)
         XCTAssertLessThanOrEqual(helper.position, helper.maxValue)
+    }
+    
+    func testSnappyHelperBaseMoveClampedToMinValue() {
+        let zones = [
+            CGRect(x: 50, y: 50, width: 100, height: 100)
+        ]
+        let helper = SnappyHelperBase(
+            zones: zones,
+            zoneIndex: 0,
+            isX: true,
+            mode: .bottomEdge,
+            screenAxisOrigin: 0,
+            screenAxisSize: 200
+        )
         
-        // Reset and try negative
+        // Move negative should be clamped to minValue
         helper.move(delta: -1000)
         XCTAssertGreaterThanOrEqual(helper.position, helper.minValue)
     }
