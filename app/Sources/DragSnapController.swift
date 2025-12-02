@@ -17,6 +17,13 @@ final class DragSnapController {
     private var activeZones: [InternalRect] = []
     private var highlightedZoneIndices: Set<Int> = []
     private var overlayScreen: NSScreen?
+    
+    private var potentialDragWindow: AXUIElement?
+    private var potentialDragWindowInitialFrame: CGRect?
+    
+    private var isMouseButtonDown = false
+    private var mouseDownWindow: AXUIElement?
+    private var mouseDownWindowInitialFrame: CGRect?
 
     private init() {}
 
@@ -49,19 +56,61 @@ final class DragSnapController {
         highlightedZoneIndices.removeAll()
         activeZones.removeAll()
         overlayScreen = nil
+        potentialDragWindow = nil
+        potentialDragWindowInitialFrame = nil
+        isMouseButtonDown = false
+        mouseDownWindow = nil
+        mouseDownWindowInitialFrame = nil
         DispatchQueue.main.async {
             OverlayController.shared.hideOverlay()
         }
     }
 
     private func handleMouseDown(_ event: NSEvent) {
-        isDragging = true
-        highlightedZoneIndices.removeAll()
+        isMouseButtonDown = true
         
-        updateOverlayVisibility()
+        let mouseLocationBottomLeft = NSEvent.mouseLocation
+        
+        guard let screenForPoint = NSScreen.screens.first(where: { $0.frame.contains(mouseLocationBottomLeft) }) else { return }
+        
+        let internalPoint = InternalPoint(fromBottomLeft: mouseLocationBottomLeft, screen: screenForPoint)
+        let axPoint = internalPoint.accessibilityPoint(for: screenForPoint)
+        
+        guard let windowUnderCursor = WindowControllerAX.getWindowUnderPoint(axPoint) else { return }
+        
+        guard let initialFrame = WindowControllerAX.getWindowFrame(windowUnderCursor) else { return }
+        
+        mouseDownWindow = windowUnderCursor
+        mouseDownWindowInitialFrame = initialFrame
+        
+        if isSnapKeyHeld() {
+            potentialDragWindow = windowUnderCursor
+            potentialDragWindowInitialFrame = initialFrame
+        }
     }
     
     private func handleMouseDragged(_ event: NSEvent) {
+        if !isDragging, let window = potentialDragWindow, let initialFrame = potentialDragWindowInitialFrame {
+            if let currentFrame = WindowControllerAX.getWindowFrame(window) {
+                let deltaX = abs(currentFrame.origin.x - initialFrame.origin.x)
+                let deltaY = abs(currentFrame.origin.y - initialFrame.origin.y)
+                let hasMoved = deltaX > 2.0 || deltaY > 2.0
+                
+                if hasMoved {
+                    isDragging = true
+                    highlightedZoneIndices.removeAll()
+                    updateOverlayVisibility()
+                } else {
+                    return
+                }
+            } else {
+                potentialDragWindow = nil
+                potentialDragWindowInitialFrame = nil
+                
+                return
+            }
+        }
+        
         guard isDragging, let screen = overlayScreen else { return }
         
         let mouseLocationBottomLeft = NSEvent.mouseLocation
@@ -101,6 +150,12 @@ final class DragSnapController {
     }
 
     private func handleMouseUp(_ event: NSEvent) {
+        isMouseButtonDown = false
+        mouseDownWindow = nil
+        mouseDownWindowInitialFrame = nil
+        potentialDragWindow = nil
+        potentialDragWindowInitialFrame = nil
+        
         guard isDragging else { return }
         
         let shouldSnap = isSnapKeyHeld() && !highlightedZoneIndices.isEmpty
@@ -138,27 +193,44 @@ final class DragSnapController {
     }
     
     private func handleFlagsChanged(_ event: NSEvent) {
-        guard isDragging else { return }
-        
-        if !isMultiZoneKeyHeld() {
-            if let screen = overlayScreen {
-                let mouseLocationBottomLeft = NSEvent.mouseLocation
-                let internalPoint = InternalPoint(fromBottomLeft: mouseLocationBottomLeft, screen: screen)
-                
-                let zonesUnderCursor = getZonesUnderCursor(at: internalPoint)
-                
-                let newIndices: Set<Int>
-                if let singleIndex = zonesUnderCursor.first {
-                    newIndices = [singleIndex]
-                } else {
-                    newIndices = []
+        if isDragging {
+            if !isMultiZoneKeyHeld() {
+                if let screen = overlayScreen {
+                    let mouseLocationBottomLeft = NSEvent.mouseLocation
+                    let internalPoint = InternalPoint(fromBottomLeft: mouseLocationBottomLeft, screen: screen)
+                    
+                    let zonesUnderCursor = getZonesUnderCursor(at: internalPoint)
+                    
+                    let newIndices: Set<Int>
+                    if let singleIndex = zonesUnderCursor.first {
+                        newIndices = [singleIndex]
+                    } else {
+                        newIndices = []
+                    }
+                    
+                    updateHighlightedZones(newIndices)
                 }
-                
-                updateHighlightedZones(newIndices)
+            }
+            
+            updateOverlayVisibility()
+        }
+        else if !isDragging && isMouseButtonDown && isSnapKeyHeld() {
+            if let window = mouseDownWindow, let initialFrame = mouseDownWindowInitialFrame {
+                if let currentFrame = WindowControllerAX.getWindowFrame(window) {
+                    let deltaX = abs(currentFrame.origin.x - initialFrame.origin.x)
+                    let deltaY = abs(currentFrame.origin.y - initialFrame.origin.y)
+                    let hasMoved = deltaX > 2.0 || deltaY > 2.0
+                    
+                    if hasMoved {
+                        potentialDragWindow = window
+                        potentialDragWindowInitialFrame = initialFrame
+                        isDragging = true
+                        highlightedZoneIndices.removeAll()
+                        updateOverlayVisibility()
+                    }
+                }
             }
         }
-        
-        updateOverlayVisibility()
     }
     
     private func updateOverlayVisibility() {
