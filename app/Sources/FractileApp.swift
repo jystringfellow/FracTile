@@ -151,10 +151,6 @@ struct FracTileApp: App {
                         }
                     }
                 },
-                onImport: {
-                    // Import will open the editor where the import UI lives
-                    EditorWindowController.shared.showEditor()
-                },
                 onDelete: {
                     if let layoutId = activeLayoutId {
                         let alert = NSAlert()
@@ -355,7 +351,6 @@ struct MenuBarContent: View {
 
     var onEdit: () -> Void = {}
     var onAdd: () -> Void = {}
-    var onImport: () -> Void = {}
     var onDelete: () -> Void = {}
     var onFactoryReset: () -> Void = {}
     var onQuit: () -> Void = {}
@@ -374,7 +369,7 @@ struct MenuBarContent: View {
                 Spacer()
             }
 
-            // Display + Layout picker + Edit/Add/Import/Delete row
+            // Display + Layout picker + Edit/Add/Delete row
             Group {
                 HStack {
                     VStack(alignment: .leading, spacing: 6) {
@@ -415,10 +410,6 @@ struct MenuBarContent: View {
                     }, label: {
                         Image(systemName: "pencil")
                         Text("Edit")                    })
-
-                    Button(action: { onImport() }, label: {
-                        Image(systemName: "square.and.arrow.down")
-                        Text("Import") })
 
                     Button(action: { onDelete() }, label: {
                         Image(systemName: "trash")
@@ -518,7 +509,6 @@ struct MenuBarContent: View {
         modifierChoices: ["Command", "Shift", "Option", "Control"],
         onEdit: {},
         onAdd: {},
-        onImport: {},
         onDelete: {},
         onFactoryReset: {},
         onQuit: {}
