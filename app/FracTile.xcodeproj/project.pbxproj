@@ -25,7 +25,6 @@
 		599477EA2EB58B8E005BEB8C /* AccessibilityHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477E92EB58B89005BEB8C /* AccessibilityHelper.swift */; };
 		599477EC2EB6D8B8005BEB8C /* FractileApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477EB2EB6D8B1005BEB8C /* FractileApp.swift */; };
 		599477EE2EB6DAE4005BEB8C /* OverlayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477ED2EB6DAE1005BEB8C /* OverlayController.swift */; };
-		599477F02EB6DC88005BEB8C /* EditorWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477EF2EB6DC84005BEB8C /* EditorWindowController.swift */; };
 		599477F72EB9612B005BEB8C /* LayoutModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477F62EB9611E005BEB8C /* LayoutModel.swift */; };
 		599477F92EB96144005BEB8C /* DefaultLayouts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477F82EB9613C005BEB8C /* DefaultLayouts.swift */; };
 		599477FB2EB96593005BEB8C /* LayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599477FA2EB96588005BEB8C /* LayoutManager.swift */; };
@@ -56,7 +55,6 @@
 		599477E92EB58B89005BEB8C /* AccessibilityHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityHelper.swift; sourceTree = "<group>"; };
 		599477EB2EB6D8B1005BEB8C /* FractileApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FractileApp.swift; sourceTree = "<group>"; };
 		599477ED2EB6DAE1005BEB8C /* OverlayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayController.swift; sourceTree = "<group>"; };
-		599477EF2EB6DC84005BEB8C /* EditorWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorWindowController.swift; sourceTree = "<group>"; };
 		599477F32EB91F91005BEB8C /* FracTile-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "FracTile-Info.plist"; sourceTree = "<group>"; };
 		599477F62EB9611E005BEB8C /* LayoutModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutModel.swift; sourceTree = "<group>"; };
 		599477F82EB9613C005BEB8C /* DefaultLayouts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultLayouts.swift; sourceTree = "<group>"; };
@@ -117,7 +115,6 @@
 				599477FA2EB96588005BEB8C /* LayoutManager.swift */,
 				599477F82EB9613C005BEB8C /* DefaultLayouts.swift */,
 				599477F62EB9611E005BEB8C /* LayoutModel.swift */,
-				599477EF2EB6DC84005BEB8C /* EditorWindowController.swift */,
 				599477ED2EB6DAE1005BEB8C /* OverlayController.swift */,
 				599477EB2EB6D8B1005BEB8C /* FractileApp.swift */,
 				599477E92EB58B89005BEB8C /* AccessibilityHelper.swift */,
@@ -229,7 +226,6 @@
 				599477F72EB9612B005BEB8C /* LayoutModel.swift in Sources */,
 				599477F92EB96144005BEB8C /* DefaultLayouts.swift in Sources */,
 				5961FC9D2EC8D7130033B4FF /* DragSnapController.swift in Sources */,
-				599477F02EB6DC88005BEB8C /* EditorWindowController.swift in Sources */,
 				599477E62EB58B6B005BEB8C /* EditorViewController.swift in Sources */,
 				598A2C342EDA5FF100A02912 /* GridEditorOverlayController.swift in Sources */,
 				598A2C352EDA5FF100A02912 /* GridEditorToolbar.swift in Sources */,
