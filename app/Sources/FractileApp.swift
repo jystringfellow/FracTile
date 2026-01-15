@@ -494,7 +494,7 @@ struct MenuBarContent: View {
                 Spacer()
                 Text(versionString())
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundStyle(.secondary)
                 Spacer()
             }
 
