@@ -503,14 +503,15 @@ struct MenuBarContent: View {
 
     private func versionString() -> String {
         let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Unknown"
-        let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "Unknown"
-        return "Version \(version) (\(build))"
+        
+        return "Version \(version)"
     }
 
     private func activeDisplayName() -> String {
         if let id = activeDisplayID, let display = displays.first(where: { $0.id == id }) {
             return display.name
         }
+        
         return "Display"
     }
 }
