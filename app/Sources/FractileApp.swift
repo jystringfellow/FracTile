@@ -487,13 +487,31 @@ struct MenuBarContent: View {
                 Spacer()
             }
 
+            Divider()
+
+            // Version display
+            HStack {
+                Spacer()
+                Text(versionString())
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Spacer()
+            }
+
         }
+    }
+
+    private func versionString() -> String {
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Unknown"
+        
+        return "Version \(version)"
     }
 
     private func activeDisplayName() -> String {
         if let id = activeDisplayID, let display = displays.first(where: { $0.id == id }) {
             return display.name
         }
+        
         return "Display"
     }
 }
