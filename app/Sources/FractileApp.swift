@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AppKit
+import ServiceManagement
 
 var isPreview: Bool {
     return ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
@@ -25,6 +26,12 @@ struct FracTileApp: App {
     // Snap / multi-zone key choices (persisted)
     @State private var snapKey: String = UserDefaults.standard.string(forKey: "FracTile.SnapKey") ?? "Shift"
     @State private var multiZoneKey: String = UserDefaults.standard.string(forKey: "FracTile.MultiZoneKey") ?? "Command"
+    @State private var openAtLogin: Bool = {
+        switch SMAppService.mainApp.status {
+        case .enabled: return true
+        default: return false
+        }
+    }()
 
     // Allowed modifier choices
     private let modifierChoices = ["Command", "Shift", "Option", "Control"]
@@ -111,6 +118,7 @@ struct FracTileApp: App {
                 layouts: layouts,
                 snapKey: $snapKey,
                 multiZoneKey: $multiZoneKey,
+                openAtLogin: $openAtLogin,
                 modifierChoices: modifierChoices,
                 onEdit: {
                     if let layoutId = activeLayoutId, let layout = layouts.first(where: { $0.id == layoutId }) {
@@ -163,6 +171,18 @@ struct FracTileApp: App {
                         if response == .alertFirstButtonReturn {
                             LayoutManager.shared.deleteLayout(withId: layoutId)
                         }
+                    }
+                },
+                onToggleOpenAtLogin: {
+                    do {
+                        if openAtLogin {
+                            try SMAppService.mainApp.register()
+                        } else {
+                            try SMAppService.mainApp.unregister()
+                        }
+                    } catch {
+                        openAtLogin.toggle()
+                        print("Failed to toggle login item: \(error)")
                     }
                 },
                 onFactoryReset: {
@@ -347,11 +367,13 @@ struct MenuBarContent: View {
     var layouts: [ZoneSet]
     @Binding var snapKey: String
     @Binding var multiZoneKey: String
+    @Binding var openAtLogin: Bool
     let modifierChoices: [String]
 
     var onEdit: () -> Void = {}
     var onAdd: () -> Void = {}
     var onDelete: () -> Void = {}
+    var onToggleOpenAtLogin: () -> Void = {}
     var onFactoryReset: () -> Void = {}
     var onQuit: () -> Void = {}
     var onRefreshDisplays: () -> Void = {}
@@ -459,6 +481,16 @@ struct MenuBarContent: View {
 
                     Spacer()
                 }
+                
+                HStack(alignment: .center, spacing: 8) {
+                    Toggle("Open at Login", isOn: Binding(get: { openAtLogin }, set: { newVal in
+                        openAtLogin = newVal
+                        onToggleOpenAtLogin()
+                    }))
+                    .font(.callout)
+
+                    Spacer()
+                }
             }
 
             Divider()
@@ -473,8 +505,6 @@ struct MenuBarContent: View {
                 .foregroundColor(.red)
                 Spacer()
             }
-
-            Divider()
 
             // Center the Quit button
             HStack {
@@ -524,10 +554,12 @@ struct MenuBarContent: View {
         layouts: [],
         snapKey: .constant("Shift"),
         multiZoneKey: .constant("Command"),
+        openAtLogin: .constant(false),
         modifierChoices: ["Command", "Shift", "Option", "Control"],
         onEdit: {},
         onAdd: {},
         onDelete: {},
+        onToggleOpenAtLogin: {},
         onFactoryReset: {},
         onQuit: {}
     )
