@@ -16,6 +16,7 @@ final class DragSnapController {
     private var isDragging = false
     private var activeZones: [InternalRect] = []
     private var highlightedZoneIndices: Set<Int> = []
+    private var multiZoneAnchorIndices: Set<Int>?
     private var overlayScreen: NSScreen?
     
     private var potentialDragWindow: AXUIElement?
@@ -54,6 +55,7 @@ final class DragSnapController {
         if let monitor = flagsChangedMonitor { NSEvent.removeMonitor(monitor); flagsChangedMonitor = nil }
         isDragging = false
         highlightedZoneIndices.removeAll()
+        multiZoneAnchorIndices = nil
         activeZones.removeAll()
         overlayScreen = nil
         potentialDragWindow = nil
@@ -121,24 +123,18 @@ final class DragSnapController {
         let multiZoneActive = isMultiZoneKeyHeld()
         
         var newHighlightedIndices: Set<Int>
-        
+
         if multiZoneActive {
-            let accumulatedIndices = highlightedZoneIndices.union(zonesUnderCursor)
-            
-            let unionRect = computeUnionRect(forIndices: accumulatedIndices)
-            
-            if let bounds = unionRect {
-                var filledIndices: Set<Int> = []
-                for (index, zone) in activeZones.enumerated() {
-                    if bounds.intersects(zone.cgRect) {
-                        filledIndices.insert(index)
-                    }
-                }
-                newHighlightedIndices = filledIndices
-            } else {
-                newHighlightedIndices = accumulatedIndices
-            }
+            let resolution = Self.resolveMultiZoneSelection(
+                activeZones: activeZones,
+                currentHighlightedIndices: highlightedZoneIndices,
+                anchorIndices: multiZoneAnchorIndices,
+                zonesUnderCursor: zonesUnderCursor
+            )
+            multiZoneAnchorIndices = resolution.anchorIndices
+            newHighlightedIndices = resolution.highlightedIndices
         } else {
+            multiZoneAnchorIndices = nil
             if let singleIndex = zonesUnderCursor.first {
                 newHighlightedIndices = [singleIndex]
             } else {
@@ -184,6 +180,7 @@ final class DragSnapController {
         
         isDragging = false
         highlightedZoneIndices.removeAll()
+        multiZoneAnchorIndices = nil
         activeZones.removeAll()
         overlayScreen = nil
         
@@ -195,6 +192,7 @@ final class DragSnapController {
     private func handleFlagsChanged(_ event: NSEvent) {
         if isDragging {
             if !isMultiZoneKeyHeld() {
+                multiZoneAnchorIndices = nil
                 if let screen = overlayScreen {
                     let mouseLocationBottomLeft = NSEvent.mouseLocation
                     let internalPoint = InternalPoint(fromBottomLeft: mouseLocationBottomLeft, screen: screen)
@@ -267,6 +265,7 @@ final class DragSnapController {
                 OverlayController.shared.hideOverlay()
             }
             highlightedZoneIndices.removeAll()
+            multiZoneAnchorIndices = nil
         }
     }
     
@@ -327,6 +326,46 @@ final class DragSnapController {
     }
     
     private func computeUnionRect(forIndices indices: Set<Int>) -> CGRect? {
+        Self.computeUnionRect(forIndices: indices, activeZones: activeZones)
+    }
+
+    static func resolveMultiZoneSelection(
+        activeZones: [InternalRect],
+        currentHighlightedIndices: Set<Int>,
+        anchorIndices: Set<Int>?,
+        zonesUnderCursor: Set<Int>
+    ) -> (highlightedIndices: Set<Int>, anchorIndices: Set<Int>?) {
+        let resolvedAnchorIndices: Set<Int>
+        if let anchorIndices, !anchorIndices.isEmpty {
+            resolvedAnchorIndices = anchorIndices
+        } else if !currentHighlightedIndices.isEmpty {
+            resolvedAnchorIndices = currentHighlightedIndices
+        } else if !zonesUnderCursor.isEmpty {
+            resolvedAnchorIndices = zonesUnderCursor
+        } else {
+            return ([], nil)
+        }
+
+        guard !zonesUnderCursor.isEmpty else {
+            return (currentHighlightedIndices, resolvedAnchorIndices)
+        }
+
+        let spanningIndices = resolvedAnchorIndices.union(zonesUnderCursor)
+        guard let bounds = computeUnionRect(forIndices: spanningIndices, activeZones: activeZones) else {
+            return (spanningIndices, resolvedAnchorIndices)
+        }
+
+        var filledIndices: Set<Int> = []
+        for (index, zone) in activeZones.enumerated() {
+            if bounds.intersects(zone.cgRect) {
+                filledIndices.insert(index)
+            }
+        }
+
+        return (filledIndices, resolvedAnchorIndices)
+    }
+
+    private static func computeUnionRect(forIndices indices: Set<Int>, activeZones: [InternalRect]) -> CGRect? {
         var unionRect: CGRect?
         for index in indices {
             guard index >= 0 && index < activeZones.count else { continue }

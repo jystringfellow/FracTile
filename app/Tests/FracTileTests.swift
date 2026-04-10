@@ -39,3 +39,65 @@ class EventControllerTests: XCTestCase {
         XCTAssertTrue(true)
     }
 }
+
+class DragSnapControllerSelectionTests: XCTestCase {
+    func testMultiZoneSelectionShrinksWhenCursorMovesBackTowardAnchor() {
+        let activeZones = makeGridZones(rows: 4, columns: 4)
+        let initialSelection = DragSnapController.resolveMultiZoneSelection(
+            activeZones: activeZones,
+            currentHighlightedIndices: [],
+            anchorIndices: nil,
+            zonesUnderCursor: [3]
+        )
+        XCTAssertEqual(initialSelection.highlightedIndices, [3])
+        XCTAssertEqual(initialSelection.anchorIndices, [3])
+
+        let expandedSelection = DragSnapController.resolveMultiZoneSelection(
+            activeZones: activeZones,
+            currentHighlightedIndices: initialSelection.highlightedIndices,
+            anchorIndices: initialSelection.anchorIndices,
+            zonesUnderCursor: [14]
+        )
+        XCTAssertEqual(expandedSelection.highlightedIndices, [2, 3, 6, 7, 10, 11, 14, 15])
+        XCTAssertEqual(expandedSelection.anchorIndices, [3])
+
+        let shrunkenSelection = DragSnapController.resolveMultiZoneSelection(
+            activeZones: activeZones,
+            currentHighlightedIndices: expandedSelection.highlightedIndices,
+            anchorIndices: expandedSelection.anchorIndices,
+            zonesUnderCursor: [9]
+        )
+        XCTAssertEqual(shrunkenSelection.highlightedIndices, [1, 2, 3, 5, 6, 7, 9, 10, 11])
+        XCTAssertEqual(shrunkenSelection.anchorIndices, [3])
+    }
+
+    func testMultiZoneSelectionUsesCurrentHighlightAsAnchorWhenModifierTurnsOnMidDrag() {
+        let activeZones = makeGridZones(rows: 2, columns: 3)
+        let selection = DragSnapController.resolveMultiZoneSelection(
+            activeZones: activeZones,
+            currentHighlightedIndices: [1],
+            anchorIndices: nil,
+            zonesUnderCursor: [5]
+        )
+
+        XCTAssertEqual(selection.highlightedIndices, [1, 2, 4, 5])
+        XCTAssertEqual(selection.anchorIndices, [1])
+    }
+
+    private func makeGridZones(rows: Int, columns: Int) -> [InternalRect] {
+        var zones: [InternalRect] = []
+        for row in 0..<rows {
+            for column in 0..<columns {
+                zones.append(
+                    InternalRect(
+                        x: CGFloat(column * 100),
+                        y: CGFloat(row * 100),
+                        width: 100,
+                        height: 100
+                    )
+                )
+            }
+        }
+        return zones
+    }
+}
