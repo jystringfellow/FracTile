@@ -1,0 +1,15 @@
+<?xml version="1.0" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>FracTile</title>
+        <item>
+            <title>0.0.4</title>
+            <pubDate>Thu, 21 May 2026 06:04:54 -0700</pubDate>
+            <sparkle:version>1</sparkle:version>
+            <sparkle:shortVersionString>0.0.4</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>15.6</sparkle:minimumSystemVersion>
+            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+            <enclosure url="https://github.com/jystringfellow/FracTile/releases/download/FracTile-0.0.4-1.zip" length="3515435" type="application/octet-stream" sparkle:edSignature="e5FDuwdlmWC2Fm3jPgPgCk8KkVV9LDdqG5/IuVN/8GHvVXAqnpchdWKp+XXhYpa2aB5pvQjy1c0Z60ByGwLdAw=="/>
+        </item>
+    </channel>
+</rss>
