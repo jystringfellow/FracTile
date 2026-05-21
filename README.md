@@ -40,6 +40,21 @@ Note: If you use a workspace or SwiftPM dependencies, prefer opening the workspa
 
 ---
 
+## Auto-updates (Sparkle)
+
+FracTile uses Sparkle for update checks and installs.
+
+- Manual check: open the menu bar popover and click `Check for Updates...`.
+- Automatic checks and automatic install behavior are handled by Sparkle preferences/prompts.
+
+Sparkle configuration keys are in `app/FracTile-Info.plist`:
+- `SUFeedURL` (appcast URL)
+- `SUPublicEDKey` (Ed25519 public key)
+- `SUEnableAutomaticChecks`
+- `SUAllowsAutomaticUpdates`
+
+---
+
 ## Permissions
 
 FracTile requires Accessibility permission (System Settings → Privacy & Security → Accessibility) to move and resize other application windows. On first run the app will detect missing permission and open System Settings with instructions. If permission is not granted, snapping and window manipulation will silently fail or produce explanatory alerts.
@@ -109,6 +124,15 @@ Accessibility & AX
 
 Tests
 - Unit tests live in `Tests/FracTileTests.swift`. Run them using the Xcode test runner or `xcodebuild test`.
+
+Release flow with GitHub Releases + Sparkle
+1. Build and archive a release app bundle.
+2. Zip the app bundle and sign the archive with Sparkle's `sign_update` tool.
+3. Update `appcast.xml` with the new version entry, download URL, file length, and Sparkle signature.
+4. Upload release assets to GitHub Releases.
+5. Publish `appcast.xml` at the stable `SUFeedURL` endpoint (commonly GitHub Pages).
+
+For the full scripted workflow, see `PUBLISHING.md`.
 
 ---
 

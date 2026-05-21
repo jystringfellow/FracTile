@@ -6,5 +6,13 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>SUFeedURL</key>
+	<string>https://jystringfellow.github.io/FracTile/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>bBOM/uvBOT8y48NWVt4WmtdJVTY/rZiOBBjYh/osfKE=</string>
+	<key>SUEnableAutomaticChecks</key>
+	<false/>
+	<key>SUAllowsAutomaticUpdates</key>
+	<true/>
 </dict>
 </plist>

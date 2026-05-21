@@ -51,3 +51,19 @@ playground.xcworkspace
 # Other common files
 *.log
 *.tmp
+
+# Sparkle release artifacts
+/release/updates/*.zip
+/release/updates/*.dmg
+/release/updates/*.pkg
+/release/updates/appcast.xml
+/release/updates/*.html
+/release/updates/*.htm
+/release/updates/*.md
+/release/updates/*.txt
+/release/updates/*.delta
+/release/updates/*.aar
+/release/updates/*.tar
+/release/updates/*.tar.gz
+/release/updates/*.tar.xz
+/release/updates/old_updates/

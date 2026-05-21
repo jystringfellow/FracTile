@@ -31,6 +31,8 @@
 		599478082EB98B75005BEB8C /* WindowControllerAX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599478072EB98B75005BEB8C /* WindowControllerAX.swift */; };
 		599478092EB98B75005BEB8C /* EventMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599478052EB98B75005BEB8C /* EventMonitor.swift */; };
 		5994780A2EB98B75005BEB8C /* SnapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599478062EB98B75005BEB8C /* SnapController.swift */; };
+		5A1000012F00000100AAA001 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 5A1000052F00000100AAA001 /* Sparkle */; };
+		5A1000022F00000100AAA001 /* SparkleUpdaterController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A1000032F00000100AAA001 /* SparkleUpdaterController.swift */; };
 		59B0FE032EBD75BA004A5696 /* FracTile.png in Resources */ = {isa = PBXBuildFile; fileRef = 59B0FE022EBD75BA004A5696 /* FracTile.png */; };
 		59B0FE062EBD7607004A5696 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59B0FE042EBD7607004A5696 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
@@ -62,6 +64,7 @@
 		599478052EB98B75005BEB8C /* EventMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventMonitor.swift; sourceTree = "<group>"; };
 		599478062EB98B75005BEB8C /* SnapController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapController.swift; sourceTree = "<group>"; };
 		599478072EB98B75005BEB8C /* WindowControllerAX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowControllerAX.swift; sourceTree = "<group>"; };
+		5A1000032F00000100AAA001 /* SparkleUpdaterController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleUpdaterController.swift; sourceTree = "<group>"; };
 		59B0FE022EBD75BA004A5696 /* FracTile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FracTile.png; sourceTree = "<group>"; };
 		59B0FE042EBD7607004A5696 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -71,6 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5A1000012F00000100AAA001 /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -100,6 +104,7 @@
 		599477722EAE6B20005BEB8C /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				5A1000032F00000100AAA001 /* SparkleUpdaterController.swift */,
 				598A2C322EDA5FF100A02912 /* GridEditorOverlayController.swift */,
 				598A2C332EDA5FF100A02912 /* GridEditorToolbar.swift */,
 				598A2C282EDA514900A02912 /* CanvasEditorView.swift */,
@@ -161,6 +166,7 @@
 			);
 			name = FracTile;
 			packageProductDependencies = (
+				5A1000052F00000100AAA001 /* Sparkle */,
 			);
 			productName = FracTile;
 			productReference = 599477562EAE68C4005BEB8C /* FracTile.app */;
@@ -192,6 +198,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				5994777E2EAFAF26005BEB8C /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
+				5A1000042F00000100AAA001 /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 599477572EAE68C4005BEB8C /* Products */;
@@ -221,6 +228,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5A1000022F00000100AAA001 /* SparkleUpdaterController.swift in Sources */,
 				593A9CFE2EC3F38700C3CF08 /* Assets.xcassets in Sources */,
 				5961FCA12ECA24C90033B4FF /* InternalRect.swift in Sources */,
 				599477F72EB9612B005BEB8C /* LayoutModel.swift in Sources */,
@@ -475,6 +483,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		5A1000042F00000100AAA001 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.6.4;
+			};
+		};
 		5994777E2EAFAF26005BEB8C /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
@@ -486,6 +502,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		5A1000052F00000100AAA001 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5A1000042F00000100AAA001 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
 		599477812EAFB18F005BEB8C /* SwiftLintBuildToolPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5994777E2EAFAF26005BEB8C /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
