@@ -154,6 +154,6 @@ Notary zip:  $NOTARY_ZIP_PATH
 
 Next:
 1) Run scripts/release_sparkle.sh using this app path.
-2) Upload generated archive to GitHub Releases.
-3) Publish appcast with scripts/publish_appcast_pages.sh.
+2) Upload the generated update archive to GitHub Releases.
+3) Publish appcast metadata with scripts/publish_appcast_pages.sh.
 EOF

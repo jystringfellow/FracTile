@@ -12,10 +12,13 @@ This guide documents the release flow for FracTile using:
 - `SUPublicEDKey` set in `app/FracTile-Info.plist`
 - `SUFeedURL` points to your Pages URL (currently `https://jystringfellow.github.io/FracTile/appcast.xml`)
 - A built and signed `FracTile.app` release artifact
+- A clean git working tree before running `scripts/release_all.sh`
 
 ## One-time setup
 
 Enable GitHub Pages for this repository (recommended from branch `gh-pages`).
+
+After first publish to `gh-pages`, `appcast.xml` may take a few minutes to appear at the Pages URL.
 
 ## Per-release flow (one-stop)
 
@@ -27,6 +30,8 @@ scripts/release_all.sh \
   --keychain-profile fractile-notary \
   --release-notes ./release/notes/v0.0.5.md
 ```
+
+`--release-notes` is optional. If provided, the file must already exist.
 
 Preview the full plan without changing files/tags/build artifacts:
 

@@ -127,11 +127,11 @@ Tests
 
 Release flow with GitHub Releases + Sparkle
 1. Run `scripts/release_all.sh` to bump versions, commit+tag, notarize, generate Sparkle artifacts, and publish appcast metadata.
-   - Use `--dry-run` first to preview the computed version/tag/URL plan without making changes.
-2. When prompted by the script, upload the generated release archive to GitHub Releases for that tag.
-3. Confirm `SUFeedURL` serves the updated `appcast.xml`.
+2. Use `--dry-run` first to preview computed version/tag/URL values before making changes.
+3. Upload the generated archive to the matching GitHub Release tag (`v<version>`).
+4. Confirm `SUFeedURL` serves the updated `appcast.xml`.
 
-For one-stop and manual command examples, see `PUBLISHING.md`.
+For complete one-step and manual commands, see `PUBLISHING.md`.
 
 ---
 

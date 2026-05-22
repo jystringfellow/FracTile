@@ -169,11 +169,10 @@ Appcast:            $UPDATES_DIR/appcast.xml
 
 Suggested GitHub release upload list:
 - $ARCHIVE_NAME
-- appcast.xml
-- old_updates/ (optional; skip if not publishing deltas)
+- old_updates/ (optional; only when publishing deltas)
 
 Reminder:
 - Ensure SUFeedURL points to the published appcast.xml URL.
-- Upload appcast.xml to the stable feed location before/with release asset publication.
+- Publish appcast.xml to its stable feed location (for example, GitHub Pages).
 - This run used maximum deltas: $MAXIMUM_DELTAS
 EOF
