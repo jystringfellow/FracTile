@@ -495,24 +495,20 @@ struct MenuBarContent: View {
                 Spacer()
             }
 
-            HStack {
-                Spacer()
-                Button(action: { onCheckForUpdates() }, label: {
-                    Image(systemName: "arrow.triangle.2.circlepath")
-                        .symbolRenderingMode(.hierarchical)
-                    Text("Check for Updates...")
-                })
-                Spacer()
-            }
-
             Divider()
 
-            HStack {
-                Spacer()
+            HStack(spacing: 8) {
                 Text(versionString())
                     .font(.caption)
                     .foregroundStyle(.secondary)
+
                 Spacer()
+
+                Button(action: { onCheckForUpdates() }) {
+                    Text("Check for Updates...")
+                }
+                .font(.caption)
+                .buttonStyle(.link)
             }
 
         }
