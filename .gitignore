@@ -67,3 +67,8 @@ playground.xcworkspace
 /release/updates/*.tar.gz
 /release/updates/*.tar.xz
 /release/updates/old_updates/
+
+# Local release pipeline byproducts
+/release/export/
+/release/notary-input.zip
+/release/ExportOptions-DeveloperID.plist
