@@ -86,7 +86,7 @@ if [[ -z "$KEYCHAIN_PROFILE" ]]; then
   exit 1
 fi
 
-if [[ ! -f "$PROJECT_PATH" ]]; then
+if [[ ! -d "$PROJECT_PATH" ]]; then
   echo "Project not found: $PROJECT_PATH" >&2
   exit 1
 fi
