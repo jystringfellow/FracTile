@@ -16,6 +16,7 @@ var isPreview: Bool {
 @main
 struct FracTileApp: App {
     @StateObject private var overlayController = OverlayController.shared
+    private let sparkleUpdater = SparkleUpdaterController.shared
 
     @State private var displays: [(id: Int, name: String, screen: NSScreen)] = []
     @State private var activeDisplayID: Int? = nil
@@ -200,6 +201,9 @@ struct FracTileApp: App {
                 onQuit: {
                     NSApp.terminate(nil)
                 },
+                onCheckForUpdates: {
+                    sparkleUpdater.checkForUpdates()
+                },
                 onRefreshDisplays: {
                     refreshDisplaysAndSelection()
                 }
@@ -343,6 +347,7 @@ struct MenuBarContent: View {
     var onToggleOpenAtLogin: () -> Void = {}
     var onFactoryReset: () -> Void = {}
     var onQuit: () -> Void = {}
+    var onCheckForUpdates: () -> Void = {}
     var onRefreshDisplays: () -> Void = {}
 
     var body: some View {
@@ -492,12 +497,18 @@ struct MenuBarContent: View {
 
             Divider()
 
-            HStack {
-                Spacer()
+            HStack(spacing: 8) {
                 Text(versionString())
                     .font(.caption)
                     .foregroundStyle(.secondary)
+
                 Spacer()
+
+                Button(action: { onCheckForUpdates() }) {
+                    Text("Check for Updates...")
+                }
+                .font(.caption)
+                .buttonStyle(.link)
             }
 
         }
@@ -533,7 +544,8 @@ struct MenuBarContent: View {
         onDelete: {},
         onToggleOpenAtLogin: {},
         onFactoryReset: {},
-        onQuit: {}
+        onQuit: {},
+        onCheckForUpdates: {}
     )
     .frame(width: 360)
     .padding()
