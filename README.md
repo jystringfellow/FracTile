@@ -132,7 +132,7 @@ Release flow with GitHub Releases + Sparkle
 4. Upload release assets to GitHub Releases.
 5. Publish `appcast.xml` at the stable `SUFeedURL` endpoint (commonly GitHub Pages).
 
-For the full scripted workflow, see `PUBLISHING.md`.
+For the fully scripted workflow, see `PUBLISHING.md`.
 
 ---
 

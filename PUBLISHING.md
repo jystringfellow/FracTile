@@ -19,13 +19,29 @@ Enable GitHub Pages for this repository (recommended from branch `gh-pages`).
 
 ## Per-release flow
 
-### 1) Prepare release metadata and appcast
+### 1) Build + notarize the release app
+
+Use the helper script from repo root:
+
+```bash
+scripts/build_notarize_release.sh \
+  --keychain-profile fractile-notary \
+  --team-id 6T7K8KMSN3 \
+  --output-dir ./release
+```
+
+Notes:
+
+- This creates/exports a Developer ID-signed app and notarizes it.
+- Output app path is typically `release/export/FracTile.app`.
+
+### 2) Prepare release metadata and appcast
 
 Use the helper script from repo root:
 
 ```bash
 scripts/release_sparkle.sh \
-  --app-path /path/to/FracTile.app \
+  --app-path ./release/export/FracTile.app \
   --updates-dir ./release/updates \
   --download-url-prefix https://github.com/jystringfellow/FracTile/releases/download/v0.0.5 \
   --maximum-deltas 0 \
@@ -41,11 +57,11 @@ Notes:
   - `release/updates/appcast.xml`
   - optional release-notes sidecar file
 
-### 2) Upload app archive to GitHub Release
+### 3) Upload app archive to GitHub Release
 
 Upload the generated zip archive to your tag release (`v0.0.5` in the example).
 
-### 3) Publish appcast to GitHub Pages
+### 4) Publish appcast to GitHub Pages
 
 ```bash
 scripts/publish_appcast_pages.sh \
@@ -79,6 +95,8 @@ scripts/publish_appcast_pages.sh --no-push
 
 ## Troubleshooting
 
+- If build/export fails, run `xcodebuild archive` manually first to inspect signing issues.
+- If notarization fails, inspect details with `xcrun notarytool history --keychain-profile fractile-notary`.
 - If Sparkle tools cannot be found, set `SPARKLE_BIN_DIR` or pass `--sparkle-bin-dir` to `scripts/release_sparkle.sh`.
 - If appcast generation fails, ensure the app archive is valid and keychain has your Sparkle private key.
 - If Pages publish fails, verify write access to the remote and branch settings.
