@@ -9,7 +9,7 @@
             <sparkle:shortVersionString>0.0.5</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>15.6</sparkle:minimumSystemVersion>
             <sparkle:releaseNotesLink>https://jystringfellow.github.io/FracTile/FracTile-0.0.5-2.md</sparkle:releaseNotesLink>
-            <enclosure url="https://github.com/jystringfellow/FracTile/releases/download/FracTile-0.0.5-2.zip" length="3347749" type="application/octet-stream" sparkle:edSignature="/OBQtYo082StSaYFtkAGWdDXeXuzVvKtCpPG8N0T33UrJVkjLJyKuA5KA+93cUmQD04gyFKN9Q0imZCfS12iDg=="/>
+            <enclosure url="https://github.com/jystringfellow/FracTile/releases/download/FracTile-0.0.5-2.zip" length="3347749" type="application/octet-stream" sparkle:edSignature="0dz2DgL6+G4yuI9LLZu92sXVKbw2DUtQWzBJxU8RP+gWY5jtUQqeJMTMD9cdC/Mmqip+SzKFKaE7Fh/Es4AjCA=="/>
         </item>
         <item>
             <title>0.0.4</title>
