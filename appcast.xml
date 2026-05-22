@@ -3,13 +3,22 @@
     <channel>
         <title>FracTile</title>
         <item>
+            <title>0.0.5</title>
+            <pubDate>Fri, 22 May 2026 05:54:49 -0700</pubDate>
+            <sparkle:version>2</sparkle:version>
+            <sparkle:shortVersionString>0.0.5</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>15.6</sparkle:minimumSystemVersion>
+            <sparkle:releaseNotesLink>https://jystringfellow.github.io/FracTile/FracTile-0.0.5-2.md</sparkle:releaseNotesLink>
+            <enclosure url="https://github.com/jystringfellow/FracTile/releases/download/FracTile-0.0.5-2.zip" length="3347749" type="application/octet-stream" sparkle:edSignature="/OBQtYo082StSaYFtkAGWdDXeXuzVvKtCpPG8N0T33UrJVkjLJyKuA5KA+93cUmQD04gyFKN9Q0imZCfS12iDg=="/>
+        </item>
+        <item>
             <title>0.0.4</title>
             <pubDate>Thu, 21 May 2026 06:04:54 -0700</pubDate>
             <sparkle:version>1</sparkle:version>
             <sparkle:shortVersionString>0.0.4</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>15.6</sparkle:minimumSystemVersion>
             <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
-            <enclosure url="https://github.com/jystringfellow/FracTile/releases/download/FracTile-0.0.4-1.zip" length="3515435" type="application/octet-stream" sparkle:edSignature="e5FDuwdlmWC2Fm3jPgPgCk8KkVV9LDdqG5/IuVN/8GHvVXAqnpchdWKp+XXhYpa2aB5pvQjy1c0Z60ByGwLdAw=="/>
+            <enclosure url="https://github.com/jystringfellow/FracTile/releases/download/FracTile-0.0.4-1.zip" length="3515435" type="application/octet-stream" sparkle:edSignature="b/SfKo9HAPlCYQk1TV7X+qNjbhea0/+htfXwJJQ62qaYWyLGIsymdr+fAMdCwFmN60Pzt/HWiRKLeuW1yjkLBQ=="/>
         </item>
     </channel>
 </rss>
