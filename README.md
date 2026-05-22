@@ -126,13 +126,12 @@ Tests
 - Unit tests live in `Tests/FracTileTests.swift`. Run them using the Xcode test runner or `xcodebuild test`.
 
 Release flow with GitHub Releases + Sparkle
-1. Build and archive a release app bundle.
-2. Zip the app bundle and sign the archive with Sparkle's `sign_update` tool.
-3. Update `appcast.xml` with the new version entry, download URL, file length, and Sparkle signature.
-4. Upload release assets to GitHub Releases.
-5. Publish `appcast.xml` at the stable `SUFeedURL` endpoint (commonly GitHub Pages).
+1. Run `scripts/release_all.sh` to bump versions, commit+tag, notarize, generate Sparkle artifacts, and publish appcast metadata.
+   - Use `--dry-run` first to preview the computed version/tag/URL plan without making changes.
+2. When prompted by the script, upload the generated release archive to GitHub Releases for that tag.
+3. Confirm `SUFeedURL` serves the updated `appcast.xml`.
 
-For the fully scripted workflow, see `PUBLISHING.md`.
+For one-stop and manual command examples, see `PUBLISHING.md`.
 
 ---
 

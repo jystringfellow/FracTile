@@ -17,7 +17,45 @@ This guide documents the release flow for FracTile using:
 
 Enable GitHub Pages for this repository (recommended from branch `gh-pages`).
 
-## Per-release flow
+## Per-release flow (one-stop)
+
+Run the full pipeline from repo root:
+
+```bash
+scripts/release_all.sh \
+  --marketing-version 0.0.5 \
+  --keychain-profile fractile-notary \
+  --release-notes ./release/notes/v0.0.5.md
+```
+
+Preview the full plan without changing files/tags/build artifacts:
+
+```bash
+scripts/release_all.sh \
+  --marketing-version 0.0.5 \
+  --keychain-profile fractile-notary \
+  --release-notes ./release/notes/v0.0.5.md \
+  --dry-run
+```
+
+What this does:
+
+- Bumps `MARKETING_VERSION` and auto-increments `CURRENT_PROJECT_VERSION`.
+- Commits the version bump and creates tag `v<MARKETING_VERSION>`.
+- Builds, exports, notarizes, and staples `FracTile.app`.
+- Generates Sparkle archive and `appcast.xml` in `release/updates/`.
+- Pauses so you can upload the archive to GitHub Releases.
+- Publishes appcast metadata to `gh-pages`.
+
+Useful options:
+
+- `--build-version <n>` to set an explicit build number.
+- `--skip-git-push` to avoid pushing `main` and tags.
+- `--skip-pages-publish` to stop before publishing appcast.
+- `--yes` for non-interactive execution.
+- `--dry-run` to print computed values and planned commands only.
+
+## Manual flow (advanced)
 
 ### 1) Build + notarize the release app
 
@@ -80,6 +118,26 @@ This publishes Sparkle metadata assets to Pages branch:
 It does not publish large app archives (`.zip`, `.dmg`, `.pkg`).
 
 ## Dry run options
+
+To run the one-stop script but stop before Pages publication:
+
+```bash
+scripts/release_all.sh \
+  --marketing-version 0.0.5 \
+  --keychain-profile fractile-notary \
+  --release-notes ./release/notes/v0.0.5.md \
+  --skip-pages-publish
+```
+
+Then publish appcast later with:
+
+```bash
+scripts/publish_appcast_pages.sh \
+  --source-dir ./release/updates \
+  --branch gh-pages \
+  --remote origin \
+  --site-subdir .
+```
 
 To test appcast publication without pushing:
 
