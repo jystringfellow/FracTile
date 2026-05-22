@@ -98,9 +98,14 @@ if git ls-remote --exit-code --heads "$REMOTE_NAME" "$PAGES_BRANCH" >/dev/null 2
   git -C "$REPO_ROOT" fetch "$REMOTE_NAME" "$PAGES_BRANCH" >/dev/null
   git -C "$REPO_ROOT" worktree add -B "$PAGES_BRANCH" "$TMP_DIR" "$REMOTE_NAME/$PAGES_BRANCH" >/dev/null
 else
-  git -C "$REPO_ROOT" worktree add --detach "$TMP_DIR" >/dev/null
-  git -C "$TMP_DIR" checkout --orphan "$PAGES_BRANCH" >/dev/null
-  git -C "$TMP_DIR" rm -rf . >/dev/null 2>&1 || true
+  if git -C "$REPO_ROOT" show-ref --verify --quiet "refs/heads/$PAGES_BRANCH"; then
+    # Reuse local pages branch when remote branch has not been published yet.
+    git -C "$REPO_ROOT" worktree add -B "$PAGES_BRANCH" "$TMP_DIR" "$PAGES_BRANCH" >/dev/null
+  else
+    git -C "$REPO_ROOT" worktree add --detach "$TMP_DIR" >/dev/null
+    git -C "$TMP_DIR" checkout --orphan "$PAGES_BRANCH" >/dev/null
+    git -C "$TMP_DIR" rm -rf . >/dev/null 2>&1 || true
+  fi
 fi
 
 TARGET_DIR="$TMP_DIR"
